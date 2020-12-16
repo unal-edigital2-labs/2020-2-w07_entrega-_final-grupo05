@@ -7,4 +7,7 @@
 * >Julian Escobar
 
 ## INTRODUCCIÓN
-Ha inicnio del semestre 2020-2, se planteo
+Ha inicio del semestre 2020-2, se planteo el desarrolo de un System on Chip (SoC) para un sistema autónmo capaz de navegar y trazar un laberinto al mismo tiempo que procese imagenes de objetos por color.
+
+Durante la primeras semanas, con ayuda del profesor y otros grupos de la misma materia se llego al siguiente esquema:
+![DIAGRAMA1](/docs/figure/SoC.png)
