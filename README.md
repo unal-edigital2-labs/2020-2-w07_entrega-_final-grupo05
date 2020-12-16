@@ -7,3 +7,4 @@
 * >Julian Escobar
 
 ## INTRODUCCIÓN
+Ha inicnio del semestre 2020-2, se planteo
