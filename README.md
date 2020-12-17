@@ -75,6 +75,13 @@ module buffer_ram_dp#(
 	);
  ```
 Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto debido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran mas adelante.
+```verilog
+// Calcular el numero de posiciones totales de memoria.
+localparam NPOS = 2 ** AW;      // Es equivalente a 2^n
+localparam imaSiz=160*120;  	//El tamaño de mi imagen
+reg [DW-1: 0] ram [0: NPOS-1];  //Crea mi memoria 
+```
+Un error comun que la gente piensa al crear la memoria es que mi memoria se creo como una matriz. Mi memoria NO es una matriz, es mejor pensarlar como un vector de 2^n posiciones, y que que cada posicion contiene un valor de 12 bits.
 
 ## Radar
 
@@ -97,29 +104,7 @@ Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultraso
 
 
  ```
-## El modulo servo.v 
+### El modulo servo.v 
  
 Este   dispositivo  funciona con tres  diferentes  pulsos (PWM)  a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
 ![DIAGRAMA1](/docs/figure/pwm.png )
-
- Para lograrlo se  utilizaron divisores de  frecuencias   y una  entrada  para  cambiar grados. Dependiendo  la frecuencia de la  tarjeta  que se usa 50MHz y 100MHz
- 
- 
- El  divisor 1ms 
-```verilog
-if(boton_cambiar_grados==1)
-		begin
-				contador<= contador +1;                      
-				if (contador< (frecuencia/1000) )//  1ms/periodo FPGA
-				begin
-					PWM <= 1;
-				end
-				else
-				if (contador < (((frecuencia*19))/1000) )  //1ms-20ms/periodo FPGA
-				begin
-				PWM <= 0;
-				end
-	end   
- ```
-![DIAGRAMA1](/docs/figure/prueva.png )
-
