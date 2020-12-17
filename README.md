@@ -292,12 +292,19 @@ module cam_read #(
 		output reg DP_RAM_regW; 		//Habilita la escitura en buffer_ram_dp
 	        output reg [AW-1:0] DP_RAM_addr_in;	// Registro de salida de la dirección de memoria de entrada 
 	        output reg [DW-1:0] DP_RAM_data_in;	// Registro de salida de la data a escribir en memoria
+```
+Acontinuacion de claro los parametros de mi maquina de estados.
+```verilog
 
 //Maquina de estados	
 	
 localparam INIT=0,BYTE1=1,BYTE2=2,NOTHING=3,imaSiz=19199;	//Declaro mis 4 estados y el tamaño de mi imagen 
 reg [1:0]status=0;						//Inicio mi maquina con el estado cero
 
+```
+Ahora se procede a explicar el primer estado. El estado 0 o INIT, es un estado de espera en cual mantendra mis direcciones, datos y registro de escritura en cero . Hasta que confirme que se empezo la transmision de una fila, cuando esto suceda captura los datos menos significativos del byte (Rojos del pixel) que esta en ese momento y pasara al tercer BYTE2 en el siguiente ciclo de pclk para capturar los datos Verde y Azul del mismo pixel y enviarlos a la memoria, y pasa al segundo estado BYTE1 en el siguiente ciclo de pclk para empezar la captura de un nuevo pixel. Este salto solo lo hace para capturar el primer pixel de la fila.
+
+```verilog
 always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los flancos de subidas de pclk que es el punto en donde
 								//mi datos de entrada ya estan estabales
     
@@ -323,31 +330,49 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
                  DP_RAM_regW<=0;		//Inhabilita la escritura
              end 
          end
-         
+  ```
+  
+  Despues de realizar la captura del primer pixel de la fila, procedemos a capturar el resto de pixeles, para eso lo hacemos en dos estados. La primera parte de la captura se hace en BYTE1 en donde realizamos la captura de los bits correspondientes al color Rojo del pixel.
+  
+  ```verilog
          BYTE1:begin
-             DP_RAM_regW<=0; 					//Desactiva la escritura en memoria 
-             if(CAM_href)begin					//si la señal Href esta arriva, evalua si ya llego a la ultima posicion en memoria
-                     if(DP_RAM_addr_in==imaSiz) DP_RAM_addr_in<=0;			//Si ya llego al final, reinicia la posición en memoria. 
-                     else DP_RAM_addr_in<=DP_RAM_addr_in+1;	//Si aun no ha llegado a la ultima posición sigue recorriendo los espacios en memoria y luego escribe en ellos cuan do pasa al estado Byte2
-                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];
+             DP_RAM_regW<=0; 					   //Desactiva la escritura en memoria 
+             if(CAM_href)begin					   //Si la señal Href esta arriba, evalua si ya llego a la ultima posicion en memoria
+                     if(DP_RAM_addr_in==imaSiz) DP_RAM_addr_in<=0; //Si ya llego al final, reinicia la posición en memoria. 
+                     else DP_RAM_addr_in<=DP_RAM_addr_in+1;	   //Si aun no ha llegado a la ultima posición sigue recorriendo los espacios en memoria y 
+		     						   //luego escribe en ellos cuando pasa al estado Byte2
+                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];	   //Captura los datos de Rojo del pixel
                  status<=BYTE2;
              end
-             else status<=NOTHING;   
+             else status<=NOTHING;   				   //Quiere decir que ya acabo la transmision de la fila, y pasa al estado NOTHING
+	     							   //para evaluar si ya se transmitio toda la imagen o no
          end
+ ```
+  
+  Ahora el estado BYTE2, capturamos los datos que nos faltan del pixel, escribimos estos datos en memoria y por ultimo volvemo a BYTE1 para empezar la captura de un nuevo pixel.
+  
+  ```verilog
          
-         BYTE2:begin							//En este estado se habilita la escritura en memoria
-             	DP_RAM_data_in[7:0]<=CAM_px_data;
-             	DP_RAM_regW<=1;    
-             	status<=BYTE1;
+         BYTE2:begin							
+             	DP_RAM_data_in[7:0]<=CAM_px_data;			//Captura los datos de Verde y Azul del pixel
+             	DP_RAM_regW<=1;    					//Activa la escritura de mi memoria con los datos de pixel que obtuvimos
+             	status<=BYTE1;						//Vuelve a BYTE1 para empezar la captura de un nuevo pixel
          end
-         
-         NOTHING:begin						// es un estado de trnsición    
-             if(CAM_href)begin					// verifica la señal href y se asigna los 4 bits mas significativos y se mueve una posición en memoria
-                 status<=BYTE2;
-                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];
-                 DP_RAM_addr_in<=DP_RAM_addr_in+1;
+  ```
+ Por ultimo el estado NOTHING, verifica si ya se realizo la transmision de toda la imagen, esto al verificar si se siguen transmitiendo filas (accion con lo que volvera a BYTE1) y si hay un pulso de Vsync (lo que indica que se transmitira una nueva imagen, accion con lo que volvera a INIT). 
+  ```verilog
+         NOTHING:begin						// Es un estado de transición    
+             if(CAM_href)begin					//Verifica si se empezo la transmision de una fila 
+	     						//Si es verdad que se empezo la transmision de una fila
+                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];	//Captura los datos que queremos del primer byte del primer pixel de la fila
+                 DP_RAM_addr_in<=DP_RAM_addr_in+1;		//Actualiza mi direccion para un nuevo pixel
+		 status<=BYTE2;					//Pasa a BYTE2 para el el siguiente ciclode pclk, secapturen los datos del segundo byte del
+		 						//primer pixel de la fila
              end
-             else if (CAM_vsync) status<=INIT;		// Si vsync esta arriba inicializa la maquina de estados    
+	     							//Si no es verdad que se empezo la transmision de una fila, se queda esperando
+								
+             else if (CAM_vsync) status<=INIT;		// Si se dio un pulso de Vsync, volvera a INIT para reiniciar las direcciones y empezar la captura de
+	     						//una nueva imagen
          end
          
          default: status<=INIT;
