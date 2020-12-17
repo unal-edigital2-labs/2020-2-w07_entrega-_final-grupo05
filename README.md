@@ -53,28 +53,28 @@ Donde n es numero de bits de la direccion, al resolver esta ecuacion obtenemos q
 Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo que necesitamos pero es el valor que nos sirve. Ya que si n fuera 14 obtendriamos 16384 lo que no alcanza para los 19200 que necesitamos.
 
 A continuacion se explica el codigo por partes:
-
+```verilog
 module buffer_ram_dp#(
 	parameter AW = 15, // Cantidad de bits  de la direccion.
 	parameter DW = 12, // Cantidad de Bits de los datos.
-	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men")
+	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men") //Con el fin de conocer si la memoria funciona se precarga
 	(
-	input clk_w,     		     // Frecuencia de toma de datos de cada pixel.
-	input [AW-1: 0] addr_in, // Direccion del dato que entra.
-	input [DW-1: 0] data_in, // Datos que entran a la memoria.
-	input regwrite,		  	   // Habilita la escritura
+	input clk_w,     		// Frecuencia de toma de datos de cada pixel.
+	input [AW-1: 0] addr_in, 	// Direccion del dato que entra.
+	input [DW-1: 0] data_in, 	// Datos que entran a la memoria.
+	input regwrite,		  	// Habilita la escritura
 
   //VGA
-	input clk_r, 				          // Reloj 25MHz VGA.
-	input [AW-1: 0] addr_out, 		// Direccion del dato que se quiere leer.
-	output reg [DW-1: 0] data_out,// Datos que si quiere leer.
+	input clk_r, 			// Reloj 25MHz VGA.
+	input [AW-1: 0] addr_out, 	// Direccion del dato que se quiere leer.
+	output reg [DW-1: 0] data_out,  // Datos que s3 quiere leer.
 	
 	//Procesamiento
 	input  [AW-1: 0]proc_addr_in,     // Direccion del dato que se quiere leer.
-	output reg [DW-1: 0] proc_data_in	// Datos que si quiere leer.
+	output reg [DW-1: 0] proc_data_in // Datos que se quiere leer.
 	);
- 
- Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos).
+ ```
+Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto de vido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran mas adelante.
 
 ## Radar
 
