@@ -331,7 +331,7 @@ Para el  echo que es la señal de entrada
 Los motores paso a paso seran utilzados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma direccion permiten el desplazamiendo hacia delante o hacia atras, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
 A continuación se muestran las  entradas y salidas del modulo: 
 
-~~~
+```verilog
 `timescale 1ns/1ps
 module motor(
     input reset,
@@ -346,7 +346,7 @@ module motor(
     output reg B1,
     output reg C1, 
     output reg D1);
-~~~
+```
 Las salidas **A**,**B**,**C**,**D** se necesitan para poder controlar uno de los motores y **A1**,**B1**,**C1**,**D1** para el otro.  
 **direccion** y **direccion2** son estradas de 2 bits, lo que para nosotros representa 4 posibles estados de los motores:
 * 1.) Giro Horario
@@ -355,7 +355,7 @@ Las salidas **A**,**B**,**C**,**D** se necesitan para poder controlar uno de los
 * 4.) No girar
 
 Posteriormente se definen algunos parametros y algunos contadores:
-```
+```verilog
     parameter divH = 50000; 
     parameter divL = 100000;
 	integer  trigger;
@@ -369,14 +369,14 @@ Posteriormente se definen algunos parametros y algunos contadores:
 	initial cuen=0;
 	initial cuen1=0;
 	initial trigger=0;
- ```
+```
 
 
 Los parametros **divH** y **divL** se utilizan como tope para el correspondiente contador **countF**, en resumen: *En cada periodo del **clk** se aumenta en 1 el **countF**, cuando el **countF** es igual al valor de **divH** el **trigger** realiza un flanco de subida y cuando **countF** es igual al valor de **divL** entonces el trigger realiza un flanco de bajada, en este ultimo paso el **countF** se reinicia a 0*; asi que el **trigger** es ahora nuestro nuevo reloj; este divisor de frecuencia es necesario debido a que los motores y driver de nuestra referencia ([2byj-48][uln2003]) no funcionan a una frecuencia tan alta (100MHz). En este paso convertimos 100MHz en 1KHz. La formula es:
 [![N|Solid](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)
 
 
-```
+```verilog
 //Trigger
 always @(posedge clk) begin 
 	if (reset) 
@@ -410,7 +410,7 @@ Cada motor tiene su propio contador, ya sea **cuen** o **cuen1**, los cuales se 
 Para la rotacion antihoraria bastó con cambiar el orden de los pasos.
 
 
-```
+```verilog
 always@(posedge  trigger) begin
 	
 	//PARA EL MOTOR 1 ------ PARA EL MOTOR 1  ----  PARA EL MOTOR 1
