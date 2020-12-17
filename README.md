@@ -497,4 +497,25 @@ Ahora dentro de "module".py, definimos que pines del modulo se conectaran al Bus
 
 ![DIAGRAMA1](/docs/figure/modulomotorpy.jpeg)
 
-Ahora, procedemos a abrir el archivo buildSoCproject.py, en donde declaramos la librerias de Litex que vamos a usar,los modulos que vamos a usar y la ubicacion de ellos, el procesador que usaremos, la frecuencia del reloj, los tamaño de la ROM (Read Only Memory, memoria de solo lectura) y la RAM (Random Access Memory, memoria de acceso aleatorio), la instaciacion de los modulos en el SoC y por ultimo la creacion del mapa de memoria del sistema.
+Ahora, procedemos a abrir el archivo buildSoCproject.py, en donde:
+```python
+from migen import *
+from migen.genlib.io import CRG
+from migen.genlib.cdc import MultiReg
+
+import nexys4ddr as tarjeta
+#import c4e6e10 as tarjeta
+
+from litex.soc.integration.soc_core import *
+from litex.soc.integration.builder import *
+from litex.soc.interconnect.csr import *
+
+from litex.soc.cores import gpio
+from module import rgbled
+from module import sevensegment
+from module import vgacontroller
+from module import camara
+from module import radar
+from module import motor
+
+```
