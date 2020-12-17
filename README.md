@@ -150,7 +150,7 @@ Por defecto, la nexysA7 hace uso de la coneccion que se ve en la figura, lo que 
 
 Como podemos ver en la imagen, el puerto VGA de la nexysA7 esta diseñado para la transmision de datos en formato no superior a RGB444. Esta es una de la principales razones por la que se eligio este formato para la imagen. 
 
-Ahora, procedemos a explicar el codigo:
+Acontinuacion se presenta el codigo:
 ```verilog
 module VGA_Driver #(DW = 12) (
 	input rst,			//Reset
@@ -175,7 +175,44 @@ localparam FRONT_PORCH_Y =10;
 localparam SYNC_PULSE_Y = 2;
 localparam BACK_PORCH_Y = 33;
 localparam TOTAL_SCREEN_Y = SCREEN_Y+FRONT_PORCH_Y+SYNC_PULSE_Y+BACK_PORCH_Y; 	// total pixel pantalla en Vertical 
+reg  [9:0] countX; // tamaño de 10 bits
+reg  [9:0] countY; // tamaño de 10 bits
+
+assign posX    = countX;
+assign posY    = countY;
+
+assign pixelOut = (countX<SCREEN_X) ? (pixelIn ) : (12'b0) ; //Transmite los datos minetras countX no supere 640 y completa con cero cuando no hay dato de entrada
+
+// señales de sincrinización de la VGA.
+assign Hsync_n = ~((countX>=SCREEN_X+FRONT_PORCH_X) && (countX<SCREEN_X+SYNC_PULSE_X+FRONT_PORCH_X)); //Genera un pulso cuando countX es mayor a 656 pero menor a 752
+assign Vsync_n = ~((countY>=SCREEN_Y+FRONT_PORCH_Y) && (countY<SCREEN_Y+FRONT_PORCH_Y+SYNC_PULSE_Y)); //Genera un pulso cuando countY es mayor a 490 pero menor a 492
+
+
+always @(posedge clk) begin
+	if (rst) begin
+		countX <= (SCREEN_X+FRONT_PORCH_X-1);  //Asigna a countX con 655 cuando se acciona reset
+		countY <= (SCREEN_Y+FRONT_PORCH_Y-1);  //Asigna a countY con 489 cuando se acciona reset
+	end
+	else begin 
+		if (countX >= (TOTAL_SCREEN_X-1)) begin 	//Verifica si ya se transmitio o no una fila
+			countX <= 0;				//Reinica countX
+			if (countY >= (TOTAL_SCREEN_Y-1)) begin //Verifica si ya se transmitieron todas las fila
+				countY <= 0;			//Reinica countY
+			end 
+			else begin
+				countY <= countY + 1;		//Quire decir que acaba de transmitir la fila y puede pasar a la siguiente
+			end
+		end 
+		else begin
+			countX <= countX + 1;			//Aumenta countX en 1 siempre y cuando se diferente de 800
+			countY <= countY;			//Quire decir que no ha acabado de transmitir la fila
+		end
+	end
+end
 ```
+### cam_read.v
+
+Este es modulo encargado de recolectar y enviar los datos de la camara OV7670 a nuestra memoria. Para diseñar este modulo, primero tenemos que saber que transmite la camara.
 
 ## Radar
 
