@@ -38,4 +38,4 @@ Como se dijo anteriormente, la camar no posee memoria por lo que toca crearla.
 Para conocer las dimensiones de mi memoria, primero necesito conocer la dimensiones y caracteristicas de la imagen que queremos. En nuestro caso nosostros queremos una imagen:
 
 * 160 X 120 Pixeles
-* Formato RGB444
+* Formato RGB444 (12 bits)
