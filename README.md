@@ -57,14 +57,14 @@ A continuacion se explica el codigo por partes:
 module buffer_ram_dp#(
 	parameter AW = 15, // Cantidad de bits  de la direccion.
 	parameter DW = 12, // Cantidad de Bits de los datos.
-	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men") //Con el fin de conocer si la memoria funciona se precarga
+	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men") //Con el fin de conocer si la memoria funciona se precarga con una imagen
 	(
 	input clk_w,     		// Frecuencia de toma de datos de cada pixel.
 	input [AW-1: 0] addr_in, 	// Direccion del dato que entra.
 	input [DW-1: 0] data_in, 	// Datos que entran a la memoria.
 	input regwrite,		  	// Habilita la escritura
 
-  //VGA
+  	//VGA
 	input clk_r, 			// Reloj 25MHz VGA.
 	input [AW-1: 0] addr_out, 	// Direccion del dato que se quiere leer.
 	output reg [DW-1: 0] data_out,  // Datos que s3 quiere leer.
