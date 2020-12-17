@@ -258,6 +258,107 @@ En la imagen tambien podemos ver que, cuando le pedimos el formato RGB444 a nues
 
 El ultimo pin xclk es un reloj de 24M Hz que entra en la camara con el fin de cordinar las operacones entre la camara y el dispositivo al que se conecto, en nuestro caso la NexysA7.
 
+Con base a la anterior explicacion se creo la siguiente maquina de estados.
+
+![DIAGRAMA1](/docs/figure/Est.png)
+
+Y con base a esta se creo la siguiente descripcion de HardWare:
+
+
+```verilog
+module cam_read #(
+		parameter AW = 15,  //Tamaño de la direccion que tiene que ser la misma que la memoria
+		parameter DW = 12   //Tamaño del dato que tiene qu ser el mismo que la memoria
+		)
+		(
+
+		CAM_pclk,     	   
+		CAM_vsync,    	  
+		CAM_href,	
+		rst,		
+		
+		DP_RAM_regW, 	
+		DP_RAM_addr_in,	
+		DP_RAM_data_in,	
+		CAM_px_data
+	    );
+	
+	    	input [7:0]CAM_px_data;	//Entrada de los datos byte a byte
+	    	input CAM_pclk;		//Reloj de trasnmsion de
+		input CAM_vsync;	//Señal vsync de la camara que me indica cuando se empieza la transmision de una imagen
+		input CAM_href;		//Señal href de la camara que me indica la transmision de una fila de la iamgen
+		input rst;		//reset de la camara 
+		
+		output reg DP_RAM_regW; 		//Habilita la escitura en buffer_ram_dp
+	        output reg [AW-1:0] DP_RAM_addr_in;	// Registro de salida de la dirección de memoria de entrada 
+	        output reg [DW-1:0] DP_RAM_data_in;	// Registro de salida de la data a escribir en memoria
+
+//Maquina de estados	
+	
+localparam INIT=0,BYTE1=1,BYTE2=2,NOTHING=3,imaSiz=19199;	//Declaro mis 4 estados y el tamaño de mi imagen 
+reg [1:0]status=0;						//Inicio mi maquina con el estado cero
+
+always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los flancos de subidas de pclk que es el punto en donde
+								//mi datos de entrada ya estan estabales
+    
+    if(rst)begin						//Reinicia las direcciones cunse acciona reset
+        status<=0;
+        DP_RAM_data_in<=0;
+        DP_RAM_addr_in<=0;
+        DP_RAM_regW<=0;
+    end
+    else begin
+	    
+     case (status)
+         INIT:begin 
+             if(~CAM_vsync&CAM_href)begin 		 // Verifica si se esta transmitiendo una fila
+	     					//Si es verdad que transmite una fila
+                 status<=BYTE2;				 // Da la orden que en siguiente ciclo de pclk se pase al estado 2
+                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0]; //se asignan los 4 bits menos significativos de la información que da la camara a
+		 					 //los 4 bits mas significativos del dato a escribir
+             end
+             else begin				//Si no es verdad que transmite una fila			
+                 DP_RAM_data_in<=0;		//Reinicia mis datos
+                 DP_RAM_addr_in<=0;		//Reinicias mis direcciones
+                 DP_RAM_regW<=0;		//Inhabilita la escritura
+             end 
+         end
+         
+         BYTE1:begin
+             DP_RAM_regW<=0; 					//Desactiva la escritura en memoria 
+             if(CAM_href)begin					//si la señal Href esta arriva, evalua si ya llego a la ultima posicion en memoria
+                     if(DP_RAM_addr_in==imaSiz) DP_RAM_addr_in<=0;			//Si ya llego al final, reinicia la posición en memoria. 
+                     else DP_RAM_addr_in<=DP_RAM_addr_in+1;	//Si aun no ha llegado a la ultima posición sigue recorriendo los espacios en memoria y luego escribe en ellos cuan do pasa al estado Byte2
+                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];
+                 status<=BYTE2;
+             end
+             else status<=NOTHING;   
+         end
+         
+         BYTE2:begin							//En este estado se habilita la escritura en memoria
+             	DP_RAM_data_in[7:0]<=CAM_px_data;
+             	DP_RAM_regW<=1;    
+             	status<=BYTE1;
+         end
+         
+         NOTHING:begin						// es un estado de trnsición    
+             if(CAM_href)begin					// verifica la señal href y se asigna los 4 bits mas significativos y se mueve una posición en memoria
+                 status<=BYTE2;
+                 DP_RAM_data_in[11:8]<=CAM_px_data[3:0];
+                 DP_RAM_addr_in<=DP_RAM_addr_in+1;
+             end
+             else if (CAM_vsync) status<=INIT;		// Si vsync esta arriba inicializa la maquina de estados    
+         end
+         
+         default: status<=INIT;
+    endcase
+ end
+end
+
+endmodule
+```
+
+
 ### procesamiento.v 
 
 
