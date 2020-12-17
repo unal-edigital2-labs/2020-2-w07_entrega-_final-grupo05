@@ -108,3 +108,44 @@ Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultraso
  
 Este   dispositivo  funciona con tres  diferentes  pulsos (PWM)  a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
 ![DIAGRAMA1](/docs/figure/pwm.png )
+
+ Para lograrlo se  utilizaron divisores de  frecuencias   y una  entrada  para  cambiar grados. Dependiendo  la frecuencia de la  tarjeta  que se usa 50MHz y 100MHz 
+El  divisor 1ms 
+
+```verilog
+if(boton_cambiar_grados==1)
+		begin
+				contador<= contador +1;                      
+				if (contador< (frecuencia/1000) )//  1ms/periodo FPGA
+				begin
+					PWM <= 1;
+				end
+				else
+				if (contador < (((frecuencia*19))/1000) )  //1ms-20ms/periodo FPGA
+				begin
+				PWM <= 0;
+				end
+	end   
+ ```
+![DIAGRAMA1](/docs/figure/prueva 1ms.png )
+
+El  divisor 1,5ms 
+
+```verilog
+
+if(boton_cambiar_grados==2)
+		begin
+				contador<= contador +1;                      
+				if (contador<((75*frecuencia)/1000) ) // 1.5ms/periodo FPGA
+				begin
+				
+					PWM <= 1;
+				end
+				else
+				if (contador < ((frecuencia*185)/10000)) //1.5ms-20ms/periodo FPGA
+				begin
+				PWM <= 0;
+				end		
+	end
+
+ ```
