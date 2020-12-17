@@ -285,6 +285,13 @@ Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultraso
 
 
  ```
+ ### Mapa de memoria radar
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|ro|radar_cntrl_distance|0x82005000|
+|rw|radar_cntrl_boton_cambiar_grados|0x82005004|
+|rw|radar_cntrl_ultra|0x82005008|
+ 
 ### El modulo servo.v 
  
 Este   dispositivo  funciona con tres  diferentes  pulsos (PWM)  a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
@@ -598,6 +605,12 @@ end
 
 	endmodule
 ```
+## Mapa de memoria motor
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|rw|motor_cntrl_direccion|0x82005800|
+|rw|motor_cntrl_direccion2|0x82005804|
+
 ## Implementacion 
 
 Con la ayuda de Litex y Vivado, unificamos los modulos anteriormente descritos mediante un Bus Wishbone a un procesador (en este caso el procesador PicoRV32).
@@ -945,3 +958,10 @@ delay_ms(1000);
 | Video|Link |
 |---|---|
 |Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
+
+## Mapa de memoria infrarojo
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|ro|infra_cntrl_salida|0x82006000|
+|ro|infra_cntrl_salida1|0x82006004|
+|ro|infra_cntrl_salida2|0x82006008|
