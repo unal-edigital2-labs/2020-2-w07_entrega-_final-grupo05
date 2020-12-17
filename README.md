@@ -746,11 +746,8 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 ![DIAGRAMA1](/docs/figure/RobotMasJose1.jpeg)
 
 
-| Video|Link |
-|---|---|
-|Prueba de Motores| [Motor](https://drive.google.com/file/d/1vxu_1vOfRV7D9-XfrUjwqPVS9JqH4vS-/view?usp=sharing)|
-|Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
-|Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
+
+
 
 
 
@@ -806,7 +803,7 @@ static void camara_test(void)
 	} 
 }
 ```
-### Pruebas de color
+#### Pruebas de color
 | Video|Link |
 |---|---|
 |Prueba de Camara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|  
@@ -845,3 +842,56 @@ static void radar_test(void)
 |---|---|
 |Prueba de Radar|[Radar](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
 
+## Codigo para Test Motor
+```verilog
+static void motor_test(void)
+{
+		
+	printf("Hola mundo");
+		
+	while(!(buttons_in_read()&1)) {
+
+    motor_cntrl_direccion_write(1);             /* motor 1 hacia delante   */
+	motor_cntrl_direccion2_write(1);            /* motor 2 hacia adelante   */
+	delay_ms(5000);	
+	motor_cntrl_direccion_write(1);            /* motor 1 hacia delante   */
+	motor_cntrl_direccion2_write(0);            /* motor 2 se apaga*/
+    delay_ms(5000);
+	motor_cntrl_direccion_write(0);           /* motor 1 se apaga*/
+	motor_cntrl_direccion2_write(1);           /* motor 2 hacia delante   */
+	delay_ms(5000);
+	motor_cntrl_direccion_write(2);           /*reversa */   
+	motor_cntrl_direccion2_write(2);          /reversa/
+	}	 
+	
+}
+```
+| Video|Link |
+|---|---|
+|Prueba de Motores| [Motor](https://drive.google.com/file/d/1vxu_1vOfRV7D9-XfrUjwqPVS9JqH4vS-/view?usp=sharing)|
+|Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
+
+## Codigo para Test Infrarojo
+```verilog
+static void infra_test(void)
+{
+
+	unsigned short salida=0;
+    unsigned short salida1=0;
+    unsigned short salida2=0; 
+		
+	printf("Hola mundo");
+		
+	while(!(buttons_in_read()&1)) {
+    salida=infra_cntrl_salida_read(); 
+    salida1=infra_cntrl_salida1_read();
+	salida2=infra_cntrl_salida2_read();
+
+printf("Salida : %i\n", salida); 
+printf("Salida1 : %i\n", salida1); 
+printf("Salida2 : %i\n", salida2); 
+delay_ms(1000);
+```
+| Video|Link |
+|---|---|
+|Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
