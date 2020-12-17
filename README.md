@@ -576,4 +576,4 @@ class Platform(XilinxPlatform):
 ```
 Una vez listos estos archivos, abrimos un terminal en la ubicacion de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezarar la creacion del HardWare de nustro SoC segun los parametros y especificaciones ingresadas en los anteriores archivos.
 
-![DIAGRAMA1](/docs/figure/UNO.jpg)
+![DIAGRAMA1](/docs/figure/UNO.jpeg)
