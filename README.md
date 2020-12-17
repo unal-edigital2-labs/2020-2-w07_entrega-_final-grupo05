@@ -487,5 +487,13 @@ end
 ```
 ## Implementacion 
 
+Con la ayuda de Litex y Vivado, unificamos los modulos anteriormente descritos mediante un Bus Wishbone a un procesador (en este caso el procesador PicoRV32).
+
+El primer paso es declarar cada modulo definido anteriormente como una clase en Python3. Para esto, abrimos una terminal e ingresamos 'touch "module".py', en donde "module" corresponde al nombre del modulo que estamos implemtando (OJO esto se hace con el top de cada proyecto)
+
+
+
+
+
 
 
