@@ -756,3 +756,59 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 |Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
 |Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
 |Prueba de Ultrasonido|[Ultrasonido](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
+
+
+
+## Codigo para Test de Camara
+
+
+
+```phyton
+static void camara_test(void)
+{
+	unsigned short figura=0;   /* Se inicializa */
+	unsigned short color=0;
+	unsigned short done=0;	
+	
+		
+	printf("Hola mundo");
+		
+	while(!(buttons_in_read()&1)) {
+
+        camara_cntrl_init_procesamiento_write(1);
+        delay_ms(2);
+        camara_cntrl_init_procesamiento_write(0);
+        done=0;
+		while(~done)
+		{
+			done=camara_cntrl_done_read();
+		}
+		figura=camara_cntrl_figure_read();
+		color=camara_cntrl_color_read();
+		
+		printf("Done : %i\n", done); 
+							/* Cuando se identifica la FIGURA aparece en consola el valor correspondiente */
+		if(figura==1) 
+			printf("Triangulo\n");    
+		else if(figura==2) 
+			printf("Circulo\n");
+		else if(figura==3) 
+			printf("Cuadrado\n");
+		else if(figura==0) 
+			printf("Figura no definida\n");
+							/*Cuando se identifica el COLOR aparece en consola el valor correspondiente */
+		if(color==1) 
+			printf("Rojo\n");
+		else if(color==2) 
+			printf("Verde\n");
+		else if(color==3) 
+			printf("Azul\n");
+		else if(color==0) 
+			printf("Color no definido\n");
+			
+		delay_ms(500);
+	} 
+}
+```
+
+
