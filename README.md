@@ -604,7 +604,7 @@ void motor_init(void);		#Cambiamos este nombre segun el modulo que queramos
 ```
 Y ahora procedemos a crear un archivo C llamado main, en este vamos a crear el SoftWare para nuestro SoC, en este:
 ```C
-#include <stdio.h>
+#include <stdio.h>			#Declarar las Librerias de C segun las funciones que se quieran en el SoftWare
 #include <stdlib.h>
 #include <string.h>
 
@@ -613,9 +613,64 @@ Y ahora procedemos a crear un archivo C llamado main, en este vamos a crear el S
 #include <console.h>
 #include <generated/csr.h>
 
-#include "delay.h"
+#include "delay.h"			#Declarar las Librerias creadas para los modulos
 #include "display.h"
 #include "camara.h"
 #include "radar.h"
 #include "motor.h"
+
+int main(void)				#Declarar el main del programa
+{
+	irq_setmask(0);
+	irq_setie(1);
+	uart_init();
+	camara_init();
+
+	puts("\nSoC - RiscV project UNAL 2020-2-- CPU testing software  interrupt "__DATE__" "__TIME__"\n");
+	help();
+	prompt();
+
+	while(1) {
+		console_service();
+	}
+
+	return 0;
+}
 ```
+
+Ya el resto depende de quiera programar el usuario apartir de los registros de lectura y escritura declarados en cada modulo. Ejemplo:
+
+```C
+static void motor_test(void)			#Esta funcion prueba el movimiento de los motores paso a paso y cambia sus direcciones cada 5 segundos.
+{
+		
+	printf("Hola mundo");
+		
+	while(!(buttons_in_read()&1)) {
+		motor_cntrl_direccion_write(1);
+		motor_cntrl_direccion2_write(1);
+		delay_ms(5000); 
+		motor_cntrl_direccion_write(1);
+		motor_cntrl_direccion2_write(0);
+		delay_ms(5000);
+		motor_cntrl_direccion_write(0);
+		motor_cntrl_direccion2_write(1);
+		delay_ms(5000);
+		motor_cntrl_direccion_write(2);
+		motor_cntrl_direccion2_write(2);
+
+	}	 
+	
+}
+```
+Ahora, en la ubicacion de main.c, abrimos una terminal y ejecutamos los siguientes comandos 'make clean' y 'make all'. 'make clean', elimina todos los archivos menos los .c y .h, y 'make all' me construye el firmware (soporte lógico inalterable, SoftWare en su nivel mas bajo).
+
+![DIAGRAMA1](/docs/figure/CUATRO.jpeg)
+
+Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nuestro caso que usamos la NexysA7, priemro verificamos que nuestro equipo reconociera la tarjeta al ejecutar el comando 'djtgcfg enum', este comando identifica si nuestro equipo esta reconociendo o no la tarjet, y para aseguaranos de que no ocurran errores con el puerto USB ejecutamos 'sudo chmod 666 /dev/ttyUSB1' el cual nos da libre acceso a aeste puerto.
+
+![DIAGRAMA1](/docs/figure/DOS.jpeg)
+
+Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, para esto abrimos una terminal y ejecutamos 'sudo litex_term /dev/ttyUSB1 --kernel "ubicacion del firmware"' y en nuestra FPGA presionamos el boton CPU_RESET. Al presionar este boton, reiniciamos la BIOS (Basic Input/Output System, Sistema Básico de Entrada y Salida) de la tarjeta permitiendonos cargar nuestro firmware.
+
+![DIAGRAMA1](/docs/figure/TRES.jpeg)
