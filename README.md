@@ -516,7 +516,9 @@ La máquina de estados se representa en la siguiente Figura:
 
 A continuación se describe cada estado:  
 
-* **INIT**: Se encarga de inicializar el procesamiento. ```verilog
+* **INIT**: Se encarga de inicializar el procesamiento. 
+
+```verilog
          INIT:begin
          Done<=0;
          Add_Anc_May<=0;
@@ -546,6 +548,7 @@ Se pueden eliminar los registros ```was_init_procesamiento```, ```aux_init_proce
 Sin embargo, al documentar se identifica el error conceptual dado que por este estado se 
 
 * **CARGAR_DATO**: Se activa *Cargar_Dato*, acción que se realiza en el negledge de *clk*. Para pasar al estado *SEL_COL* se verifica que el pixel traido desde *buffer_ram_dp.v* cumpla con los requerimientos mínimos. Si no se cumple el caso anterior, se verifica si las columnas que han sido procesadas son mayores o iguales a 160, al ser mayores se pasa al estado *ADD_ACH_MAY* esto es similiar a que se cumpla *(Dato>=referencia==0&fila>=n==1)* expresado en la figura de la máquina de estados. Finalmente, si ninguno de los casos anteriores se cumple, se pasa al estado *ADD_COL*.
+
 ```verilog
 CARGAR_DATO:begin 
          Done<=0;
@@ -565,7 +568,8 @@ CARGAR_DATO:begin
          else status<=ADD_COL;
          
          end
-```	
+```
+
 * **SEL_COL**: Este estado se encarga de activar *Sel_Col*. Pasa al estado *ADD_ACH_MAY* si el número de columas procesadas es mayor o igual al numero de filas procesadas.Si no se cumple, pasa al estado *ADD_COL*. 
 
 ```verilog
@@ -585,6 +589,7 @@ CARGAR_DATO:begin
        
          end
 ```
+
 * **ADD_ACH_MAY**: Se encarga de activar *Add_Ach_May* descrito con anterioridad y pasa directamente al estado *ADD_COL*.
 
 
