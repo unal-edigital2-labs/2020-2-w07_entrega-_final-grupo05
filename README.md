@@ -361,7 +361,300 @@ endmodule
 
 ### procesamiento.v 
 
+#### Idea principal
 
+La idea principal para el procesamiento fue compartida por el grupo de *Maicol*. Esta idea consiste en analizar cada columna de la fila n y al finalizar el procedimiento verificar si cumple con las condiciones mínimas para que se considere una fila válida, por ejemplo que tenga almenos tres pixeles válidos; además, al ser la fila válida, se aumenta un registro llamado `fila_valida`. Los pixeles validos son aquellos sus componentes R, G y B sean mayores a un mínimo que se establezca. Luego, se va aumentando un registro que se llama `ancho_actual` cada vez que un pixel sea válido. Al analizar una fila completa se analiza si `ancho_actual` es mayor al `ancho_anterior`, si se cumple, otro registro llamado `ancho_mayor` se aumenta en uno. Finalmente, `ancho_anterior` toma el valor de `ancho_actual` y `ancho_actual` se reinicializa. En otras parlabras `ancho_mayor` se aumenta en uno cada vez que la fila valida n es mayor a la fila válida n-1. Finalmente, se analiza el valor `ancho_mayor` y `fila_valida` y se proponen los siguientes casos:
+
+* Tríangulo: `fila_valida` es aproximadamente igual a `ancho_mayor` si el triángulo está con una arista en la parte superior.
+
+* Círculo:`ancho_mayor` es aproximadamente el 50 \% del `fila_valida` .
+
+* Cuadrado: Esto se da si el `ancho_mayor` es aproximadamente cero o también puede ser por defecto si solo nos limitamos a tres figuras. En nuestro caso, colocamos la condición de que las fílas válidas debían ser majores a cero.
+
+
+#### Desarrollo del módulo
+El diagrama funcional se presenta en la siguiente figura
+
+![DIAGRAMA1](./docs/figure/proc_func.png)
+
+Descripción de funcionalidades:
+
+* **Start** : Se inicializan todos los datos.
+* **clk==posedge** : Condicional para verificar si el reloj de la Tarjeta de desarrollo está en un posedge.
+
+* **init==1** : La idea es almacenar el valor de la orden de iniciar procesamiento y no volverla a habilitar hasta que acabe. Con esto, se debe esperar a que acabe un procesamiento para continuar con el otro.  En verilog se tiene el siguiente código:
+
+```verilog
+if((~was_init_procesamiento)|enable) begin
+	if(init_procesamiento|enable)begin
+```
+
+Luego se colocó el anable dado que se pensaba en activar el inicio de procesamiento al finalizar de procesar, pero se concluye que esto no es del todo necesario.
+
+* **Cargar Dato** : Carga un pixel, mediante un aumento en la dirección de memoria , que viene desde ```buffer_ram_dp```.  Su código en verilog es el siguiente:
+
+```verilog
+ if(Cargar_Dato) begin
+          proc_addr_in=proc_addr_in+1;
+        end
+```
+
+* **Dato>=referencia** : Se comprueba si los datos o pixel cargado previamente, cumplen con características mínimas para ser procesado. Por ejemplo, que cualquiera de los bits pertenecientes a R, G o B sean mayores a 1. En verilog se representa como:
+```verilog
+if(proc_data_in[11:8]>=min_R|proc_data_in[7:4]>=min_G|proc_data_in[3:0]>=min_B)
+```
+
+* **Sel_Color** : Se separaran los colores R,G y B de cada pixel y se van sumando. Además, el registro ```ancho_actual``` se aumenta.
+
+```verilog
+else if (Sel_Color)begin
+        ancho_actual<=ancho_actual+1;
+        R<=R+proc_data_in[11:8];
+        G<=G+proc_data_in[7:4];
+        B<=B+proc_data_in[3:0];
+        end
+```
+* **columna>=m** Compara si las columnas que en el procesamiento se están realizando son mayores o iguales a las columnas que tiene la matriz del tamaño de imagen 	que se emplea, en nuestro caso corresponde a 160.
+
+* **Add_Anc_May**: Su función principal es comparar el ```ancho_anterior```con el ```ancho_actual``` y determinar si este último es mayor y en dado caso se aumenta ```ancho_mayor```. Además, tiene la función de aumentar las filas procesadas, reiniciar el contador de las columnas ```col```, actualizar el ```ancho_anterior``` y reiniciar el ```ancho_actual```.
+
+```verilog
+else if (Add_Anc_May)begin
+        fil<=fil+1;
+        col<=0;
+            if(ancho_actual>min_ancho_actual)begin 
+                fila_valida<=fila_valida+1;
+                if(ancho_anterior<ancho_actual)ancho_mayor<=ancho_mayor+1;
+            end
+        ancho_anterior<=ancho_actual;
+        ancho_actual<=0;       
+        end
+```
+
+* **Add_Columna**: este bloque aparentemente es muy trivial, pero en la máquina de estados se va a observar su importancia el cual radica en disminuir los casos de transición entre estados estando desde ```Cargar_Dato```.
+
+```verilog
+else if (Add_Columna)begin
+        col<=col+1; 
+        end
+```
+
+* **fila>=n**: verifica si las filas que el módulo va contando son iguales o superiores a las que tiene el tamaño de la imagen. Con esto se verifica que se ha procesado la totalidad del tamaño de la imagen.
+
+```verilog
+if(fil>n)
+```
+
+* **done**: Se encarga de elegir el color en el que la cámara está tomando el video, eligiéndo a partir de de los colores registrados. Además, según las filas válidas(```fila_valida```) registradas y el valor de ```ancho_mayor``` se halla la figura.
+
+```verilog
+else if(Done) begin
+        done<=1;
+        
+		aux_init_procesamiento<=0;
+        // Se hace necesaria la última comparación
+        if(ancho_actual>min_ancho_actual)begin 
+                fila_valida<=fila_valida+1;
+                if(ancho_anterior<ancho_actual)ancho_mayor<=ancho_mayor+1;
+            end
+        
+        // Para el color
+
+        if(R>G&R>B) color<=1; // Color Rojo
+        else if(G>R&G>B) color<=2; // Color Verde
+        else if(B>R&B>G) color<=3; // Color Azul
+        else color<=0;
+        
+        // Para la Figura
+       //fila_valida-(fila_valida>>4) Se hacen 4 corrimiento a derecha lo que equivale al 1/2^2 porciento de error admitido
+       //(fila_valida+(fila_valida>>4))>>1 hace referencia al 50 porciento de las filas validas mas un error. 
+        if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida-(fila_valida>>2))) figure<=1; // Tri�ngulo
+        else if(((fila_valida+(fila_valida>>2))>>1)>ancho_mayor&ancho_mayor>((fila_valida-(fila_valida>>2))>>1)) figure<=2; // c�rculo
+        else if(fila_valida>0) figure<=3; // cuadrado
+        else figure<=0;
+        
+        end
+```
+Análisis de condiciones para escoger la Figura:
+**Triángulo**: ```if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida-(fila_valida>>2))) ``` dado que las figuras no pueden ser exactas, se deja un margen de error. En este caso si *ancho_mayor* está entre número de filas válidas y aproximadamente el número de filas válidas menos la cuarta parte de estas, se tiene que la figura es un triángulo.
+
+**Círculo**:Supongamos que las filas validas sean 100 entonces, ```(fila_valida+(fila_valida>>2)``` equivales a 100+100/4=125, luego un corrimiento a la derecha ``` ((fila_valida+(fila_valida>>2))>>1``` es equivalente a rango superior de 62. Para el límite inferior ```(fila_valida-(fila_valida>>2))>>1)``` equivale a piso((100-100/4)/2), es decir 37. En otras palabras si el ancho mayor está del 37\% al 62\% de las filas válidas, entonces se puede considearar un círculo.
+
+
+**Cuadrado**: Si las filas válidas son son mayores a cero, entonces son un cuadrado.
+
+
+La máquina de estados se representa en la siguiente Figura:
+
+
+![DIAGRAMA1](./docs/figure/proc_maqu.png )
+
+A continuación se describe cada estado:  
+
+* **INIT**: Se encarga de inicializar el procesamiento. ```verilog
+         INIT:begin
+         Done<=0;
+         Add_Anc_May<=0;
+         Sel_Color<=0;
+         Add_Columna<=0;
+         Cargar_Dato<=0;
+         
+         if((~was_init_procesamiento)|enable)begin
+            if(init_procesamiento|enable)begin
+               was_init_procesamiento<=1;
+               Reset<=0;
+               status<=CARGAR_DATO;
+               enable<=0;       
+            end
+         
+         end
+         aux_init_procesamiento<=init_procesamiento;
+         if(~init_procesamiento) Reset<=1;
+            
+         
+         end
+```
+
+Se pueden eliminar los registros ```was_init_procesamiento```, ```aux_init_procesamiento```, ya que por este estado no se vuelve a pasar hasta que todo el procesamiento se realice, es decir se elimina el problema que se tenía en el digrama funcional de almacenar la orden de *init* (`init_procesamiento`), ya que una vez *init* es uno se inicializa el proceso sin importar los valorees que este tome hasta que no termine.
+
+
+Sin embargo, al documentar se identifica el error conceptual dado que por este estado se 
+
+* **CARGAR_DATO**: Se activa *Cargar_Dato*, acción que se realiza en el negledge de *clk*. Para pasar al estado *SEL_COL* se verifica que el pixel traido desde *buffer_ram_dp.v* cumpla con los requerimientos mínimos. Si no se cumple el caso anterior, se verifica si las columnas que han sido procesadas son mayores o iguales a 160, al ser mayores se pasa al estado *ADD_ACH_MAY* esto es similiar a que se cumpla *(Dato>=referencia==0&fila>=n==1)* expresado en la figura de la máquina de estados. Finalmente, si ninguno de los casos anteriores se cumple, se pasa al estado *ADD_COL*.
+```verilog
+CARGAR_DATO:begin 
+         Done<=0;
+         Add_Anc_May<=0;
+         Sel_Color<=0;
+         Add_Columna<=0;
+         Cargar_Dato<=1;
+         
+         
+         
+         if(proc_data_in[11:8]>=min_R|proc_data_in[7:4]>=min_G|proc_data_in[3:0]>=min_B) begin 
+         status<=SEL_COL;
+         end
+         else if(col>=m) begin
+         status<=ADD_ACH_MAY;
+         end
+         else status<=ADD_COL;
+         
+         end
+```	
+* **SEL_COL**: Este estado se encarga de activar *Sel_Col*. Pasa al estado *ADD_ACH_MAY* si el número de columas procesadas es mayor o igual al numero de filas procesadas.Si no se cumple, pasa al estado *ADD_COL*. 
+
+```verilog
+
+    SEL_COL: begin
+         
+         Done<=0;
+         Add_Anc_May<=0;
+         Sel_Color<=1;
+         Add_Columna<=0;
+         Cargar_Dato<=0;
+         
+         if(col>=m)begin
+         status<=ADD_ACH_MAY;
+         end
+         else status<=ADD_COL;
+       
+         end
+```
+* **ADD_ACH_MAY**: Se encarga de activar *Add_Ach_May* descrito con anterioridad y pasa directamente al estado *ADD_COL*.
+
+
+```verilog
+         ADD_ACH_MAY:begin
+         Add_Anc_May<=1;
+         Sel_Color<=0;
+         Add_Columna<=0;
+         Cargar_Dato<=0;
+         
+         status<=ADD_COL;
+		 end
+```
+
+* **ADD_COL**: Activa *Add_Columna*, pasa al estado *Done* si el número de filas procesadas es mayor al numéro de filas de la imagen almacenada y al no cumplirse el anterior pasa al estado *CARGAR_DATO*.
+
+```verilog
+
+    ADD_COL:begin 
+         Done<=0;
+         Add_Anc_May<=0;
+         Sel_Color<=0;
+         Add_Columna<=1;
+         Cargar_Dato<=0;
+            
+         if(fil>n) status=DONE;
+         else status=CARGAR_DATO;      
+    end
+         
+```
+
+* **DONE**:  Activa *Done* y pasa al estado *NOTHING*.
+
+```verilog
+
+	DONE:begin
+    	Done<=1;
+    	Add_Anc_May<=0;
+    	Sel_Color<=0;
+	    Add_Columna<=0;
+        Cargar_Dato<=0;
+             
+        was_init_procesamiento<=0;
+        status<=NOTHING;
+    end
+```
+
+* **NOTHING** La función es este estado es esperar que se active nuevamente la acción de procesamiento para reiniciar los registros y comenzar el procesamiento de nuevo, esto se hace para que los datos no se sobre no se borren en el momento justo después de terminar.
+
+```verilog
+ 
+	NOTHING:begin
+         
+        if(init_procesamiento)begin
+            status<=INIT;
+            enable<=1;
+            Reset<=1;  
+        end
+             
+    end
+```
+
+Se tiene un *Reset* interno para poder reinicializar los registros tal como lo haría el `rst` general.
+
+#### Simulaciones
+Después varios errores corregidos, se logró realizar una simulación de a nivel de compuestas lógicas después de sintetizar, los resultados se visualizan en la siguiente Figura y se inabilitó el `img_generate` del `test_cam_TB.v` para que solo se estén procesando los datos del archivo inicializador circulo.mem.
+
+![DIAGRAMA1](./docs/figure/TB_procesamiento.png)
+
+De la simulación se puede deducir que:
+
+* El procesamiento de una figura dura aproximadamente 500 us.
+
+* Cuando *init_procesamiento* está activo mas o menos por 1000 us se hacen 3 procesamientos, el último se genera así init procesamiento no esté activo.
+* El *init_procesamiento* se activa en mas o menos 2000 us y dura medio ciclo de reloj activado. Pese a esto genera el procesamiento que se ilustra en el cambio de `done` entre los 2000 us y 2500 us.
+
+* Identifica el color correctamente que es 1, equivalente a rojo el cual es el mismo que está en el archivo circulo.mem. En general:
+
+```verilog
+color=1, rojo
+color=2, verde
+color=3, Azul
+```
+
+* La figura no la identificó, ya que en python se generó un círculo pero registró un cuadrado. En general:
+
+```verilog
+figure=1, Triángulo
+figure=2, Círculo
+figure=3, Cuadrado
+```
+
+
+ 
+#### Errores corregidos
 
 ### camara.v 
 
