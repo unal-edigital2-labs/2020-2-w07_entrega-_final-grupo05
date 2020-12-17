@@ -57,3 +57,5 @@ Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo q
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
 
 ![DIAGRAMA1](/docs/figure/motoryultra.png )
+
+Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultrasonido.v
