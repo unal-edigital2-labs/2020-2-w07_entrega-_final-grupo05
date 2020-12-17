@@ -1,8 +1,8 @@
 # W07_Entrega-_final
 [![N|Solid](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)
 
-* >Jose Celis
-* >Julian Pulido
+* >Jose Alvaro Celis Lopez
+* >Julian David Pulido Castañeda
 * >Esteban Landino
 * >Julian Escobar
 
