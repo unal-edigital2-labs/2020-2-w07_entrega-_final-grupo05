@@ -12,3 +12,21 @@ Ha inicio del semestre 2020-2, se planteo el desarrolo de un System on Chip (SoC
 Durante la primeras semanas, con ayuda del profesor y otros grupos de la misma materia se llego al siguiente esquema para el SoC:
 
 ![DIAGRAMA1](/docs/figure/SoC.png)
+
+Por cuestiones de tiempo y logsitica se trabajaron e implementaron los siguientes dispositivos:
+
+* >Camara (Procesamiento y VGA)
+* >Radar (Ultrasonido y Servomotor)
+* >Motores Pasa a Paso
+* >Infrarojo
+
+Ahora procedemos a explicar cada uno.
+
+### Camara
+La camara usada fue la OV7670, sus caracteristicas principales son:
+
+* >Es una camara de video
+* >No posee memoria de almacenamiento 
+* >La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
+
+El driver camara esta compuesto
