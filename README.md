@@ -221,7 +221,26 @@ if(boton_cambiar_grados==2)
  
  
 
-![DIAGRAMA1](/docs/figure/prueva1.5ms.png )
+
+
+ ```verilog
+El  divisor 2ms 
+	else if(boton_cambiar_grados==3)
+		begin
+				contador<= contador +1;                      
+				if (contador<((frecuencia*2)/1000))	//2ms/periodo FPGA
+				begin				
+					PWM <= 1;
+				end
+				else
+				if (contador < ((frecuencia*18)/1000)) //2ms-20ms/periodo FPGA
+				begin
+				PWM <= 0;
+				end				
+	end
+
+ ```
+
 
 Para reiniciar el ciclo
 
@@ -235,6 +254,11 @@ Para reiniciar el ciclo
 
 
 ```
+
+
+
+
+
 
 Salida tomada con el osciloscopio   
 
