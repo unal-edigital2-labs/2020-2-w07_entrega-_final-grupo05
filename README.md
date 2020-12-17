@@ -59,3 +59,27 @@ Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonid
 ![DIAGRAMA1](/docs/figure/motoryultra.png )
 
 Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultrasonido.v
+``` verilog
+module restador#(
+parameter n=2
+)
+(
+    
+    clk,
+    A,
+    B,
+    INIT,
+    C
+    );
+    
+    
+    input clk;
+    input [n:0]A;
+    input [n:0]B;
+    input INIT;
+    
+    output reg[n+1:0] C;
+
+```
+
+
