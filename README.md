@@ -125,6 +125,28 @@ En la sigiente imagen se muestra su caracteristico conector.
 
 ![DIAGRAMA1](/docs/figure/VGA.png)
 
+La asignacion de sus pines es la siguiente:
+
+* Pin 1	 | RED       | Canal Rojo
+* Pin 2	 | GREEN     | Canal Verde
+* Pin 3	 | BLUE	     | Canal Azul
+* Pin 4	 | N/C	     | Sin contacto
+* Pin 5	 | GND	     | Tierra (HSync)
+* Pin 6	 | RED_RTN   | Vuelta Rojo o tierra
+* Pin 7	 | GREEN_RTN | Vuelta Verde o tierra
+* Pin 8	 | BLUE_RTN	 | Vuelta Azul o tierra
+* Pin 9	 |+5 V	     | +5 V (Corriente continua)
+* Pin 10 | GND	     | tierra (Sincr. Vert, Corriente continua)
+* Pin 11 | N/C       | Sin contacto
+* Pin 12 | SDA	     | I²C datos
+* Pin 13 |	HSync	 | Sincronización horizontal
+* Pin 14 |	VSync	 | Sincronización vertical
+* Pin 15 |	SCLAdfgg | I2Velocidad Reloj
+
+Por defecto, la nexysA7 hace uso de la coneccion que se ve en la figura, lo que quiere decir que en este poryecto solo se usaran los Pines 1,2,3,13 y 14, y sus respectivas tierras en los Pines 5,6,7,8 y 10.
+
+![DIAGRAMA1](/docs/figure/VGAn.png)
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
