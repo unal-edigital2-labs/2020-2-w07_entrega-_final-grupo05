@@ -145,6 +145,7 @@ if(boton_cambiar_grados==1)
 				end
 	end   
  ```
+ 
 ![DIAGRAMA1](/docs/figure/prueva 1ms.png )
 
 El  divisor 1,5ms 
@@ -167,7 +168,7 @@ if(boton_cambiar_grados==2)
 	end
 
  ```
- ![DIAGRAMA1](/docs/figure/pueva.png )
+ ![DIAGRAMA1](/docs/figure/pueva 1.5.png )
 
  
  
