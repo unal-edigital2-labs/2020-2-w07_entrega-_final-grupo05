@@ -232,8 +232,19 @@ La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero
 
 Por logica los pines 3.3V y GND, corresponde a la fuente que alimenta a la camara. Segun el datasheet, Reset reinicia mi camara con cero y PWDN apaga mi camara con 1, por lo que estas dos señales podemos elegir si incluirlas en el bloque y mantenarlas esta señales constantes o conectarlas directamente a la alimentacion siendo 3.3V para tener un 1 y GND para tener un cero.
 
-SCL y SDA son los pines que me permiten configuar mi camara atraves del portocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Es posble realizar esta comunicacion con un bloque creado en verilog.
+SCL y SDA son los pines que me permiten configuar mi camara atraves del portocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Como podemos ver en la imagen, este protocolo iniacialmente manda por SDA la direccion del dato que quiero mas una señal de Lectura/Escritura y una señal de finalizacion de envio de direccion, y tiempo despues envia mi dato mas un señal de finalizacion de envio del dato,  esta transmision se ajusta mediante pulsos de reloj enviados en SCL.
 
+![DIAGRAMA1](/docs/figure/i2c.png)
+
+SCL Y SDA inicialmente este en 1, inicio mi transmision cuando genero un flanco de bajada de SDA. Despues, SCL empieza a genarar pulsos en donde los primeros 7 pulsos corresponde a la direccion que esto enviando por SDA. El octavo pulso transmite si voy a leer o escribir el dato que voy a enviar o esta en esa direccion. El noveno pulso de SCL me indica que acabo la transmision de la direccion.
+
+Independiente, si es de lectura o escritura la transmision del dato vincualado a esa direccion sera la misma. Ahora SCL esta en bajo y SDA en alto, esto nos indica que pronto empezara la transmision de datos. Nuevamentes, SCL genera pulsos, los primeros 8 pulsos equivalen al dato que esta en la direccion previamente enviada o el dato que quiero en la direccion que envie, el noveno pulso nos indica el fin de la transmision del dato. Y ahora para finlizar el proceso, seda un flanco de subida en SDA mientras SCL esta en 1.
+
+Esta comunicacion puede ser implementada en verilog. Pero por cuestiones de tiempo, no se pudo realizar y se lugar se uso arduino para esto, la razon de usar esta comunicacion es modificar los registros de nuestra camara con el finde de obtener la imagen RGB444 de 160 X 120 pixeles que queremos. El archivo .ino que configura esta en este repositorio con el nombre OV7670_config.ino el cual me informa atraves del monitor serial si ya se modificaron los registros que queria, como esta clase NO es de arduino no se explicara que se programo. 
+
+![DIAGRAMA1](/docs/figure/ard.png)
+
+Pero si tener en cuenta que hay que realizar la siguiente coneccion entre la camara y arduino, una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camar se apaga.
 
 ### procesamiento.v 
 
