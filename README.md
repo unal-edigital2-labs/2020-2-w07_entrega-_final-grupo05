@@ -749,13 +749,9 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 | Video|Link |
 |---|---|
 |Prueba de Motores| [Motor](https://drive.google.com/file/d/1vxu_1vOfRV7D9-XfrUjwqPVS9JqH4vS-/view?usp=sharing)|
-|Prueba de Camara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|
-|Prueba de Camara (Color Verde)|[Verde](https://drive.google.com/file/d/16T3MjzKltFQgiD0hfPjv6t5gTMpveU5H/view?usp=sharing)|
-|Prueba de Camara (Color Azul)|[Azul](https://drive.google.com/file/d/1-VUkyytr2cszjgOyDO96EMMkKlhhFFQX/view?usp=sharing)|
-|Prueba de Camara (Color Negro)|[Negro](https://drive.google.com/file/d/1s8l3amipnY6vRhjtKXHgEss0r2nNTBO-/view?usp=sharing)|
 |Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
 |Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
-|Prueba de Ultrasonido|[Ultrasonido](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
+
 
 
 
@@ -763,7 +759,7 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 
 
 
-```phyton
+```verilog
 static void camara_test(void)
 {
 	unsigned short figura=0;   /* Se inicializa */
@@ -810,5 +806,42 @@ static void camara_test(void)
 	} 
 }
 ```
+### Pruebas de color
+| Video|Link |
+|---|---|
+|Prueba de Camara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|  
+|Prueba de Camara (Color Verde)|[Verde](https://drive.google.com/file/d/16T3MjzKltFQgiD0hfPjv6t5gTMpveU5H/view?usp=sharing)|  
+|Prueba de Camara (Color Azul)|[Azul](https://drive.google.com/file/d/1-VUkyytr2cszjgOyDO96EMMkKlhhFFQX/view?usp=sharing)|  
+|Prueba de Camara (Color Negro)|[Negro](https://drive.google.com/file/d/1s8l3amipnY6vRhjtKXHgEss0r2nNTBO-/view?usp=sharing)|  
 
+
+## Codigo para Test Radar
+```verilog
+static void radar_test(void)
+{
+		
+	printf("Hola mundo");
+		
+	while(!(buttons_in_read()&1)) {
+
+    radar_cntrl_boton_cambiar_grados_write(1);   /* cambia el servo a 0 grados  */
+	delay_ms(500);
+
+	radar_cntrl_boton_cambiar_grados_write(2);   /* cambia el servo a 90 grados  */
+	delay_ms(500);
+	
+	radar_cntrl_boton_cambiar_grados_write(3);   /* cambia el servo a 180 grados  */
+	delay_ms(500);
+
+	radar_cntrl_ultra_write(1);                /* enciende  el ultrazonido  */
+	delay_ms(5000);	
+	radar_cntrl_ultra_write(0);
+
+	}	 
+	
+}
+```
+| Video|Link |
+|---|---|
+|Prueba de Radar|[Radar](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
 
