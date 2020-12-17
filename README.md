@@ -74,7 +74,7 @@ module buffer_ram_dp#(
 	output reg [DW-1: 0] proc_data_in // Datos que se quiere leer.
 	);
  ```
-Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto de vido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran mas adelante.
+Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto debido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran mas adelante.
 
 ## Radar
 
