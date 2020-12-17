@@ -688,6 +688,10 @@ figure=3, Cuadrado
 
 ### camara.v 
 
+Este bloque es el principal, en este se intancian los bloques anteriormente explicados. Se busca que este bloque tengan la siguiente coneccion interna entre cada bloque.
+
+![DIAGRAMA1](/docs/figure/camf.png)
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
