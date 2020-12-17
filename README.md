@@ -577,3 +577,45 @@ class Platform(XilinxPlatform):
 Una vez listos estos archivos, abrimos un terminal en la ubicacion de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezarar la creacion del HardWare de nustro SoC segun los parametros y especificaciones ingresadas en los anteriores archivos.
 
 ![DIAGRAMA1](/docs/figure/UNO.jpeg)
+
+Una vez creado el HardWare de nuestro SoC, procedemos a crear nuestro SoftWare. Para esto primero tenemos que crear librerias para nuestros modulos, esto podemos hacerlo al copiar cualquier libreria y usarla como plantilla (las librerias se distingue por se arvhivos .h).
+
+![DIAGRAMA1](/docs/figure/CapturamotorH.jpeg)
+
+Dentro de nuestra plantilla de libreria, escrbimos lo siguiente:
+
+```python
+#ifndef __MOTOR_H		#Cambiamos este nombre segun el modulo que queramos
+#define __MOTOR_H		#Cambiamos este nombre segun el modulo que queramos
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+void motor_isr(void);		#Cambiamos este nombre segun el modulo que queramos
+void motor_init(void);		#Cambiamos este nombre segun el modulo que queramos
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+```
+Y ahora procedemos a crear un archivo C llamado main, en este vamos a crear el SoftWare para nuestro SoC, en este:
+```C
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <irq.h>
+#include <uart.h>
+#include <console.h>
+#include <generated/csr.h>
+
+#include "delay.h"
+#include "display.h"
+#include "camara.h"
+#include "radar.h"
+#include "motor.h"
+```
