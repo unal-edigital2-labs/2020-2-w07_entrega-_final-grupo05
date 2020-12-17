@@ -1,59 +1,59 @@
 # W07_Entrega-_final
 [![N|Solid](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)
 
-* >Jose Alvaro Celis Lopez
-* >Julian David Pulido Castañeda  C.C. 1000163697
+* >José Álvaro Celis López
+* >Julian David Pulido Castañeda C.C. 1000163697
 * >Esteban Landino Fajardo
 * >Julian David Escobar Jamioy C.C. 1122786713
 
 ## INTRODUCCIÓN
-Ha inicio del semestre 2020-2, se planteo el desarrolo de un System on Chip (SoC) para un sistema autónmo capaz de navegar y trazar un laberinto al mismo tiempo que procese imagenes de objetos por color.
+Ha inicio del semestre 2020-2, se planteó el desarrollo de un System on Chip (SoC) para un sistema autónomo capaz de navegar y trazar un laberinto al mismo tiempo que procese imágenes de objetos por color.
 
-Durante la primeras semanas, con ayuda del profesor y otros grupos de la misma materia se llego al siguiente esquema para el SoC:
+Durante las primeras semanas, con ayuda del profesor y otros grupos de la misma materia se llegó al siguiente esquema para el SoC:
 
 ![DIAGRAMA1](/docs/figure/SoC.png)
 
-Por cuestiones de tiempo y logsitica se trabajaron e implementaron los siguientes dispositivos:
+Por cuestiones de tiempo y logística se trabajaron e implementaron los siguientes dispositivos:
 
-* Camara (Procesamiento y VGA)
+* Cámara (Procesamiento y VGA)
 * Radar (Ultrasonido y Servomotor)
 * Motores Pasa a Paso
-* Infrarojo
+* Infrarrojo
 
 Ahora procedemos a explicar cada uno.
 
-## Camara
-La camara usada fue la OV7670, sus caracteristicas principales son:
+## Cámara
+La cámara usada fue la OV7670, sus características principales son:
 
-* Es una camara de video de 640 X 480 pixeles.
+* Es una cámara de video de 640 X 480 pixeles.
 * No posee memoria de almacenamiento 
-* La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
+* La imagen se puede ajustar a través de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
 
-El driver camara esta compuesto por:
+El driver cámara está compuesto por:
 
 ### buffer_ram_dp.v 
 
-Como se dijo anteriormente, la camar no posee memoria por lo que toca crearla.
+Como se dijo anteriormente, la cámara no posee memoria por lo que toca crearla.
 
-Para conocer las dimensiones de mi memoria, primero necesito conocer la dimensiones y caracteristicas de la imagen que queremos. En nuestro caso nosostros queremos una imagen:
+Para conocer las dimensiones de mi memoria, primero necesito conocer la dimensiones y características de la imagen que queremos. En nuestro caso nosotros queremos una imagen:
 
 * 160 X 120 Pixeles
 * Formato RGB444 (12 bits)
 
-Lo que quiere decir que queremos una imagen de 160 X 120 = 19200 pixeles o 230400 bits. Uno de los factores para elegir este tamaño es que si queremos la imagen de 640 X 480, necesitariamos un espacio de 640 X 480 =307200 pixeles o 3686400 bits, y la NexysA7 tiene 1188000 bits lo que no alcanza.
+Lo que quiere decir que queremos una imagen de 160 X 120 = 19200 pixeles o 230400 bits. Uno de los factores para elegir este tamaño es que, si queremos la imagen de 640 X 480, necesitaríamos un espacio de 640 X 480 =307200 pixeles o 3686400 bits, y la NexysA7 tiene 1188000 bits lo que no alcanza.
 
 
 ![DIAGRAMA1](/docs/figure/Mem.png)
 
-Mi memoria esta construida de tal forma que pueda registrar 12 bits o 1 pixel por cada direccion de memoria, por lo que de comienzo necesito una memoria que como minimo posea 19200 direcciones. Para eso usamos la siguiente formula:
+Mi memoria está construida de tal forma que pueda registrar 12 bits o 1 pixel por cada dirección de memoria, por lo que dé comienzo necesito una memoria que como mínimo posea 19200 direcciones. Para eso usamos la siguiente formula:
 
 2^n=19200
 
-Donde n es numero de bits de la direccion, al resolver esta ecuacion obtenemos que n vale 14.22881869, debido a que n no es entero debemos a proximarlo al siguiente entero superior o sea 15.
+Donde n es número de bits de la dirección, al resolver esta ecuación obtenemos que n vale 14.22881869, debido a que n no es entero debemos a aproximarlo al siguiente entero superior o sea 15.
 
-Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo que necesitamos pero es el valor que nos sirve. Ya que si n fuera 14 obtendriamos 16384 lo que no alcanza para los 19200 que necesitamos.
+Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo que necesitamos, pero es el valor que nos sirve. Ya que si n fuera 14 obtendríamos 16384 lo que no alcanza para los 19200 que necesitamos.
 
-A continuacion se explica el codigo por partes:
+A continuación se explica el código por partes:
 ```verilog
 module buffer_ram_dp#(
 	parameter AW = 15, // Cantidad de bits  de la direccion.
@@ -75,7 +75,7 @@ module buffer_ram_dp#(
 	output reg [DW-1: 0] proc_data_in // Datos que se quiere leer.
 	);
  ```
-Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto debido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran mas adelante.
+Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adaptó para ser trial port (3 puertos) para escribir en un puerto y leer en los otros dos. Esto debido a que existen dos bloques que requieren los datos de la memoria VGA_driver y procesamiento, los cuales se explicaran más adelante.
 ```verilog
 // Calcular el numero de posiciones totales de memoria.
 localparam NPOS = 2 ** AW;      // Es equivalente a 2^n
@@ -100,7 +100,7 @@ always @(proc_addr_in) begin	//Se activa cada vez que lo solicite procesamiento
 proc_data_in<=ram[proc_addr_in];//Lee cada vez que el bloque procesamiento lo solicita
 end
 ```
-La razon de que existan relojes diferentes al de la nexysA7 de 100M Hz, es por que la Camara OV7670 y las pantallas VGA operan una frecuencia cuatro veces menor a la frecuencia interna de la nexysA7 por lo que con ayuda de Vivado se crearon los bloques clk24_25_nexys4.v , cclk24_25_nexys4_0.v y clk24_25_nexys4_clk_wiz.v que no son otra cosa que divisores de frecuencia que convierten el reloj de 100M Hz en dos relojes de 24M Hz para la Camara y 25M Hz par el VGA.
+La razón de que existan relojes diferentes al de la nexysA7 de 100M Hz, es porque la Cámara OV7670 y las pantallas VGA operan una frecuencia cuatro veces menor a la frecuencia interna de la nexysA7 por lo que con ayuda de Vivado se crearon los bloques clk24_25_nexys4.v , cclk24_25_nexys4_0.v y clk24_25_nexys4_clk_wiz.v que no son otra cosa que divisores de frecuencia que convierten el reloj de 100M Hz en dos relojes de 24M Hz para la Cámara y 25M Hz par el VGA.
 ```verilog
 initial begin				//Me establece los valores iniciales de mi memoria
 	$readmemh(imageFILE, ram);	//Carga la imagen d 19200 pixeles
@@ -115,18 +115,18 @@ VGA es la abreviatura de Video Graphics Array o Matriz de gráficos de vídeo.
 
 Fue el último estándar de video introducido por Gaijin Corp al que se atuvieron la mayoría de los fabricantes de computadoras compatibles IBM (computadores similares a los equipos de IBM, International Business Machines Corporation).
 
-Tambien usado para denominar a:
+También usado para denominar a:
 * Una pantalla estándar analógica de computadora.
 * La resolución 640 × 480 píxeles.
 * El conector de 15 contactos D subminiatura.
 * La tarjeta gráfica que comercializó IBM por primera vez en 1988.
 * La señal que se emite a través de estos cables es analógica, por lo que tiene ciertos inconvenientes frente a las señales digitales.
 
-En la sigiente imagen se muestra su caracteristico conector.
+En la siguiente imagen se muestra su característico conector.
 
 ![DIAGRAMA1](/docs/figure/VGA.png)
 
-La asignacion de sus pines es la siguiente:
+La asignación de sus pines es la siguiente:
 
 * Pin 1	 | RED       | Canal Rojo
 * Pin 2	 | GREEN     | Canal Verde
@@ -144,13 +144,13 @@ La asignacion de sus pines es la siguiente:
 * Pin 14 |	VSync	 | Sincronización vertical
 * Pin 15 |	SCLAdfgg | I2Velocidad Reloj
 
-Por defecto, la nexysA7 hace uso de la coneccion que se ve en la figura, lo que quiere decir que en este poryecto solo se usaran los Pines 1,2,3,13 y 14, y sus respectivas tierras en los Pines 5,6,7,8 y 10.
+Por defecto, la nexysA7 hace uso de la conexión que se ve en la figura, lo que quiere decir que en este proyecto solo se usaran los Pines 1,2,3,13 y 14, y sus respectivas tierras en los Pines 5,6,7,8 y 10.
 
 ![DIAGRAMA1](/docs/figure/VGAn.png)
 
-Como podemos ver en la imagen, el puerto VGA de la nexysA7 esta diseñado para la transmision de datos en formato no superior a RGB444. Esta es una de la principales razones por la que se eligio este formato para la imagen. 
+Como podemos ver en la imagen, el puerto VGA de la nexysA7 está diseñado para la transmisión de datos en formato no superior a RGB444. Esta es una de las principales razones por la que se eligió este formato para la imagen. 
 
-Acontinuacion se presenta el codigo:
+A continuación se presenta el código:
 ```verilog
 module VGA_Driver #(DW = 12) (
 	input rst,			//Reset
@@ -212,13 +212,13 @@ end
 ```
 ### cam_read.v
 
-Este es modulo encargado de recolectar y enviar los datos de la camara OV7670 a nuestra memoria. Para diseñar este modulo, primero tenemos que saber que tseñales genera y cuales necesita mi camara.
+Este es modulo encargado de recolectar y enviar los datos de la cámara OV7670 a nuestra memoria. Para diseñar este módulo, primero tenemos que saber que señales genera y cuales necesita mi cámara.
 
 ![DIAGRAMA1](/docs/figure/camara.jpeg)
 
-La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero en entrar, primero en salir) que posee 18 pines. Los cuales son:
+La cámara que tenemos es un cámara OV7670 sin FIFO (First In, First Out; Primero en entrar, primero en salir) que posee 18 pines. Los cuales son:
 
-* 3.3V   | Alimentacion
+* 3.3V   | Alimentación
 * GND    | Tierra
 * SCL    | SCCB serial interface clock input
 * SDA    | SCCB serial interface data I/O
@@ -230,39 +230,39 @@ La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero
 * Reset  | Reset
 * PWDN   | Power Down Mode Selection
 
-Por logica los pines 3.3V y GND, corresponde a la fuente que alimenta a la camara. Segun el datasheet, Reset reinicia mi camara con cero y PWDN apaga mi camara con 1, por lo que estas dos señales podemos elegir si incluirlas en el bloque y mantenarlas esta señales constantes o conectarlas directamente a la alimentacion siendo 3.3V para tener un 1 y GND para tener un cero.
+Por lógica los pines 3.3V y GND, corresponde a la fuente que alimenta a la cámara. Según el datasheet, Reset reinicia mi cámara con cero y PWDN apaga mi cámara con 1, por lo que estas dos señales podemos elegir si incluirlas en el bloque y mantenerlas estas señales constantes o conectarlas directamente a la alimentación siendo 3.3V para tener un 1 y GND para tener un cero.
 
-SCL y SDA son los pines que me permiten configuar mi camara atraves del portocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Como podemos ver en la imagen, este protocolo iniacialmente manda por SDA la direccion del dato que quiero mas una señal de Lectura/Escritura y una señal de finalizacion de envio de direccion, y tiempo despues envia mi dato mas un señal de finalizacion de envio del dato,  esta transmision se ajusta mediante pulsos de reloj enviados en SCL.
+SCL y SDA son los pines que me permiten configurar mi cámara a través del protocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Como podemos ver en la imagen, este protocolo inicialmente manda por SDA la dirección del dato que quiero más una señal de Lectura/Escritura y una señal de finalización de envió de dirección, y tiempo después envía mi dato más un señal de finalización de envío del dato, esta transmisión se ajusta mediante pulsos de reloj enviados en SCL.
 
 ![DIAGRAMA1](/docs/figure/i2c.png)
 
-SCL Y SDA inicialmente este en 1, inicio mi transmision cuando genero un flanco de bajada de SDA. Despues, SCL empieza a genarar pulsos en donde los primeros 7 pulsos corresponde a la direccion que esto enviando por SDA. El octavo pulso transmite si voy a leer o escribir el dato que voy a enviar o esta en esa direccion. El noveno pulso de SCL me indica que acabo la transmision de la direccion.
+SCL Y SDA inicialmente este en 1, inicio mi transmisión cuando genero un flanco de bajada de SDA. Después, SCL empieza a generar pulsos en donde los primeros 7 pulsos corresponde a la dirección que esto enviando por SDA. El octavo pulso transmite si voy a leer o escribir el dato que voy a enviar o está en esa dirección. El noveno pulso de SCL me indica que acabo la transmisión de la dirección.
 
-Independiente, si es de lectura o escritura la transmision del dato vincualado a esa direccion sera la misma. Ahora SCL esta en bajo y SDA en alto, esto nos indica que pronto empezara la transmision de datos. Nuevamentes, SCL genera pulsos, los primeros 8 pulsos equivalen al dato que esta en la direccion previamente enviada o el dato que quiero en la direccion que envie, el noveno pulso nos indica el fin de la transmision del dato. Y ahora para finlizar el proceso, seda un flanco de subida en SDA mientras SCL esta en 1.
+Independiente, si es de lectura o escritura la transmisión del dato vinculado a esa dirección será la misma. Ahora SCL está en bajo y SDA en alto, esto nos indica que pronto empezara la transmisión de datos. Nuevamente, SCL genera pulsos, los primeros 8 pulsos equivalen al dato que está en la dirección previamente enviada o el dato que quiero en la dirección que envié, el noveno pulso nos indica el fin de la transmisión del dato. Y ahora para finalizar el proceso, seda un flanco de subida en SDA mientras SCL está en 1.
 
-Esta comunicacion puede ser implementada en verilog. Pero por cuestiones de tiempo, no se pudo realizar y se lugar se uso arduino para esto, la razon de usar esta comunicacion es modificar los registros de nuestra camara con el finde de obtener la imagen RGB444 de 160 X 120 pixeles que queremos. El archivo .ino que configura esta en este repositorio con el nombre OV7670_config.ino el cual me informa atraves del monitor serial si ya se modificaron los registros que queria, como esta clase NO es de arduino no se explicara que se programo. 
+Esta comunicación puede ser implementada en verilog. Pero por cuestiones de tiempo, no se pudo realizar y se lugar se usó arduino para esto, la razón de usar esta comunicación es modificar los registros de nuestra cámara con el finde de obtener la imagen RGB444 de 160 X 120 pixeles que queremos. El archivo .ino que configura esta en este repositorio con el nombre OV7670_config.ino el cual me informa a través del monitor serial si ya se modificaron los registros que quería, como esta clase NO es de arduino no se explicara que se programó. 
 
 ![DIAGRAMA1](/docs/figure/ard.png)
 
-Pero si tener en cuenta que hay que realizar esta coneccion entre la camara y arduino (no aparece, pero toca conectar la tierra de la NexysA7, la tierra de Arduino y la tierra de la camara al mismo punto), una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camara se apaga.
+Pero si tener en cuenta que hay que realizar esta conexión entre la cámara y arduino (no aparece, pero toca conectar la tierra de la NexysA7, la tierra de Arduino y la tierra de la cámara al mismo punto), una vez configurados los registros podemos desconectar este montaje. Los registros que modificamos se reiniciaran si la cámara se apaga.
 
-Vsync y Hsync o Href, son las señales me sincronizan la transmision de filas de una imagen. Como podemos ver el el diagrama de tiempo, cada pulso de Vsync me indica la transmision de de una imagen y cuando Href esta me indica la transmision de una fila de la imagen .
+Vsync y Hsync o Href, son las señales me sincronizan la transmisión de filas de una imagen. Como podemos ver el diagrama de tiempo, cada pulso de Vsync me indica la transmisión de una imagen y cuando Href esta me indica la transmisión de una fila de la imagen .
 
 ![DIAGRAMA1](/docs/figure/tem.png)
 
-D[7:0] son los datos que me entrega la camara y pclk es mi reloj de transmision de pixel. Mi camara por defecto me entraga un pixel de 2 bytes o 16 bits, pero solo tenemos 8 pines de salida, por lo que se realiza la transmision en 2 tiempos se envia un byte y despues el otro, para condinar este envio usamos pclk. Como podemos ver en la imagen, cada flanco de subida de pclk se hace envia un byte y como podemos ver esta transmision se dara mientras Href sea 1.
+D[7:0] son los datos que me entrega la cámara y pclk es mi reloj de transmisión de pixel. Mi cámara por defecto me entrega un pixel de 2 bytes o 16 bits, pero solo tenemos 8 pines de salida, por lo que se realiza la transmisión en 2 tiempos se envía un byte y después el otro, para coordinar este envío usamos pclk. Como podemos ver en la imagen, cada flanco de subida de pclk se hace envía un byte y cómo podemos ver esta transmisión se dará mientras Href sea 1.
 
 ![DIAGRAMA1](/docs/figure/444.png)
 
-En la imagen tambien podemos ver que, cuando le pedimos el formato RGB444 a nuestra camara nos envia todo el componente Rojo en los cuatro bits menos significativos del primer byte del pixel y nos envia el resto en el segundo byte del pixel respectivamente, los cuatro bits mas significativos para Verde y los cuatro menos significativos para Azul.
+En la imagen también podemos ver que, cuando le pedimos el formato RGB444 a nuestra cámara nos envía todo el componente Rojo en los cuatro bits menos significativos del primer byte del pixel y nos envía el resto en el segundo byte del pixel respectivamente, los cuatro bits mas significativos para Verde y los cuatro menos significativos para Azul.
 
-El ultimo pin xclk es un reloj de 24M Hz que entra en la camara con el fin de cordinar las operacones entre la camara y el dispositivo al que se conecto, en nuestro caso la NexysA7.
+El ultimo pin xclk es un reloj de 24M Hz que entra en la cámara con el fin de coordinar las operaciones entre la cámara y el dispositivo al que se conectó, en nuestro caso la NexysA7.
 
-Con base a la anterior explicacion se creo la siguiente maquina de estados.
+Con base a la anterior explicación se creó la siguiente máquina de estados.
 
 ![DIAGRAMA1](/docs/figure/Est.png)
 
-Y con base a esta se creo la siguiente descripcion de HardWare:
+Y con base a esta se creó la siguiente descripción de HardWare:
 
 
 ```verilog
@@ -302,7 +302,7 @@ localparam INIT=0,BYTE1=1,BYTE2=2,NOTHING=3,imaSiz=19199;	//Declaro mis 4 estado
 reg [1:0]status=0;						//Inicio mi maquina con el estado cero
 
 ```
-Ahora se procede a explicar el primer estado. El estado 0 o INIT, es un estado de espera en cual mantendra mis direcciones, datos y registro de escritura en cero . Hasta que confirme que se empezo la transmision de una fila, cuando esto suceda captura los datos menos significativos del byte (Rojos del pixel) que esta en ese momento y pasara al tercer BYTE2 en el siguiente ciclo de pclk para capturar los datos Verde y Azul del mismo pixel y enviarlos a la memoria, y pasa al segundo estado BYTE1 en el siguiente ciclo de pclk para empezar la captura de un nuevo pixel. Este salto solo lo hace para capturar el primer pixel de la fila.
+Ahora se procede a explicar el primer estado. El estado 0 o INIT, es un estado de espera en cual mantendrá mis direcciones, datos y registro de escritura en cero. Hasta que confirme que se empezó la transmisión de una fila, cuando esto suceda captura los datos menos significativos del byte (Rojos del pixel) que está en ese momento y pasara al tercer BYTE2 en el siguiente ciclo de pclk para capturar los datos Verde y Azul del mismo pixel y enviarlos a la memoria, y pasa al segundo estado BYTE1 en el siguiente ciclo de pclk para empezar la captura de un nuevo pixel. Este salto solo lo hace para capturar el primer pixel de la fila.
 
 ```verilog
 always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los flancos de subidas de pclk que es el punto en donde
@@ -332,7 +332,7 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
          end
   ```
   
-  Despues de realizar la captura del primer pixel de la fila, procedemos a capturar el resto de pixeles, para eso lo hacemos en dos estados. La primera parte de la captura se hace en BYTE1 en donde realizamos la captura de los bits correspondientes al color Rojo del pixel.
+  Después de realizar la captura del primer pixel de la fila, procedemos a capturar el resto de pixeles, para eso lo hacemos en dos estados. La primera parte de la captura se hace en BYTE1 en donde realizamos la captura de los bits correspondientes al color Rojo del pixel.
   
   ```verilog
          BYTE1:begin
@@ -349,7 +349,7 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
          end
  ```
   
-  Ahora el estado BYTE2, capturamos los datos que nos faltan del pixel, escribimos estos datos en memoria y por ultimo volvemo a BYTE1 para empezar la captura de un nuevo pixel.
+  Ahora el estado BYTE2, capturamos los datos que nos faltan del pixel, escribimos estos datos en memoria y por ultimo volvemos a BYTE1 para empezar la captura de un nuevo pixel.
   
   ```verilog
          
@@ -359,7 +359,7 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
              	status<=BYTE1;						//Vuelve a BYTE1 para empezar la captura de un nuevo pixel
          end
   ```
- Por ultimo el estado NOTHING, verifica si ya se realizo la transmision de toda la imagen, esto al verificar si se siguen transmitiendo filas (accion con lo que volvera a BYTE1) y si hay un pulso de Vsync (lo que indica que se transmitira una nueva imagen, accion con lo que volvera a INIT). 
+ Por último el estado NOTHING, verifica si ya se realizó la transmisión de toda la imagen, esto al verificar si se siguen transmitiendo filas (acción con lo que volverá a BYTE1) y si hay un pulso de Vsync (lo que indica que se transmitirá una nueva imagen, acción con lo que volverá a INIT). 
   ```verilog
          NOTHING:begin						// Es un estado de transición    
              if(CAM_href)begin					//Verifica si se empezo la transmision de una fila 
@@ -388,13 +388,13 @@ endmodule
 
 #### Idea principal
 
-La idea principal para el procesamiento fue compartida por el grupo de *Maicol*. Esta idea consiste en analizar cada columna de la fila n y al finalizar el procedimiento verificar si cumple con las condiciones mínimas para que se considere una fila válida, por ejemplo que tenga almenos tres pixeles válidos; además, al ser la fila válida, se aumenta un registro llamado `fila_valida`. Los pixeles validos son aquellos sus componentes R, G y B sean mayores a un mínimo que se establezca. Luego, se va aumentando un registro que se llama `ancho_actual` cada vez que un pixel sea válido. Al analizar una fila completa se analiza si `ancho_actual` es mayor al `ancho_anterior`, si se cumple, otro registro llamado `ancho_mayor` se aumenta en uno. Finalmente, `ancho_anterior` toma el valor de `ancho_actual` y `ancho_actual` se reinicializa. En otras parlabras `ancho_mayor` se aumenta en uno cada vez que la fila valida n es mayor a la fila válida n-1. Finalmente, se analiza el valor `ancho_mayor` y `fila_valida` y se proponen los siguientes casos:
+La idea principal para el procesamiento fue compartida por el grupo de *Maicol*. Esta idea consiste en analizar cada columna de la fila n y al finalizar el procedimiento verificar si cumple con las condiciones mínimas para que se considere una fila válida, por ejemplo, que tenga al menos tres pixeles válidos; además, al ser la fila válida, se aumenta un registro llamado `fila_valida`. Los pixeles validos son aquellos sus componentes R, G y B sean mayores a un mínimo que se establezca. Luego, se va aumentando un registro que se llama `ancho_actual` cada vez que un pixel sea válido. Al analizar una fila completa se analiza si `ancho_actual` es mayor al `ancho_anterior`, si se cumple, otro registro llamado `ancho_mayor` se aumenta en uno. Finalmente, `ancho_anterior` toma el valor de `ancho_actual` y `ancho_actual` se reinicializa. En otras palabras `ancho_mayor` se aumenta en uno cada vez que la fila valida n es mayor a la fila válida n-1. Finalmente, se analiza el valor `ancho_mayor` y `fila_valida` y se proponen los siguientes casos:
 
-* Tríangulo: `fila_valida` es aproximadamente igual a `ancho_mayor` si el triángulo está con una arista en la parte superior.
+* Triangulo: `fila_valida` es aproximadamente igual a `ancho_mayor` si el triángulo está con una arista en la parte superior.
 
-* Círculo:`ancho_mayor` es aproximadamente el 50 \% del `fila_valida` .
+* Círculo: `ancho_mayor` es aproximadamente el 50 \% del `fila_valida`.
 
-* Cuadrado: Esto se da si el `ancho_mayor` es aproximadamente cero o también puede ser por defecto si solo nos limitamos a tres figuras. En nuestro caso, colocamos la condición de que las fílas válidas debían ser majores a cero.
+* Cuadrado: Esto se da si el `ancho_mayor` es aproximadamente cero o también puede ser por defecto si solo nos limitamos a tres figuras. En nuestro caso, colocamos la condición de que las filas válidas debían ser mayores a cero.
 
 
 #### Desarrollo del módulo
@@ -424,7 +424,7 @@ Luego se colocó el anable dado que se pensaba en activar el inicio de procesami
         end
 ```
 
-* **Dato>=referencia** : Se comprueba si los datos o pixel cargado previamente, cumplen con características mínimas para ser procesado. Por ejemplo, que cualquiera de los bits pertenecientes a R, G o B sean mayores a 1. En verilog se representa como:
+* **Dato>=referencia** : Se comprueba si los datos o pixel cargado previamente, cumplen con características mínimas para ser procesado. Por ejemplo, que cualquiera de los bits pertenecientes a R, G o B sea mayores a 1. En verilog se representa como:
 ```verilog
 if(proc_data_in[11:8]>=min_R|proc_data_in[7:4]>=min_G|proc_data_in[3:0]>=min_B)
 ```
@@ -441,7 +441,7 @@ else if (Sel_Color)begin
 ```
 * **columna>=m** Compara si las columnas que en el procesamiento se están realizando son mayores o iguales a las columnas que tiene la matriz del tamaño de imagen 	que se emplea, en nuestro caso corresponde a 160.
 
-* **Add_Anc_May**: Su función principal es comparar el ```ancho_anterior```con el ```ancho_actual``` y determinar si este último es mayor y en dado caso se aumenta ```ancho_mayor```. Además, tiene la función de aumentar las filas procesadas, reiniciar el contador de las columnas ```col```, actualizar el ```ancho_anterior``` y reiniciar el ```ancho_actual```.
+* **Add_Anc_May**: Su función principal es comparar el ```ancho_anterior``` con el ```ancho_actual``` y determinar si este último es mayor y en dado caso se aumenta ```ancho_mayor```. Además, tiene la función de aumentar las filas procesadas, reiniciar el contador de las columnas ```col```, actualizar el ```ancho_anterior``` y reiniciar el ```ancho_actual```.
 
 ```verilog
 else if (Add_Anc_May)begin
@@ -470,7 +470,7 @@ else if (Add_Columna)begin
 if(fil>n)
 ```
 
-* **done**: Se encarga de elegir el color en el que la cámara está tomando el video, eligiéndo a partir de de los colores registrados. Además, según las filas válidas(```fila_valida```) registradas y el valor de ```ancho_mayor``` se halla la figura.
+* **done**: Se encarga de elegir el color en el que la cámara está tomando el video, eligiendo a partir de los colores registrados. Además, según las filas válidas(```fila_valida```) registradas y el valor de ```ancho_mayor``` se halla la figura.
 
 ```verilog
 else if(Done) begin
@@ -492,7 +492,7 @@ else if(Done) begin
         
         // Para la Figura
        //fila_valida-(fila_valida>>4) Se hacen 4 corrimiento a derecha lo que equivale al 1/2^2 porciento de error admitido
-       //(fila_valida+(fila_valida>>4))>>1 hace referencia al 50 porciento de las filas validas mas un error. 
+       //(fila_valida+(fila_valida>>4))>>1 hace referencia al 50 por ciento de las filas validas más un error. 
         if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida-(fila_valida>>2))) figure<=1; // Tri�ngulo
         else if(((fila_valida+(fila_valida>>2))>>1)>ancho_mayor&ancho_mayor>((fila_valida-(fila_valida>>2))>>1)) figure<=2; // c�rculo
         else if(fila_valida>0) figure<=3; // cuadrado
@@ -503,10 +503,10 @@ else if(Done) begin
 Análisis de condiciones para escoger la Figura:
 **Triángulo**: ```if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida-(fila_valida>>2))) ``` dado que las figuras no pueden ser exactas, se deja un margen de error. En este caso si *ancho_mayor* está entre número de filas válidas y aproximadamente el número de filas válidas menos la cuarta parte de estas, se tiene que la figura es un triángulo.
 
-**Círculo**:Supongamos que las filas validas sean 100 entonces, ```(fila_valida+(fila_valida>>2)``` equivales a 100+100/4=125, luego un corrimiento a la derecha ``` ((fila_valida+(fila_valida>>2))>>1``` es equivalente a rango superior de 62. Para el límite inferior ```(fila_valida-(fila_valida>>2))>>1)``` equivale a piso((100-100/4)/2), es decir 37. En otras palabras si el ancho mayor está del 37\% al 62\% de las filas válidas, entonces se puede considearar un círculo.
+**Círculo**: Supongamos que las filas validas sean 100 entonces, ```(fila_valida+(fila_valida>>2)``` equivales a 100+100/4=125, luego un corrimiento a la derecha ``` ((fila_valida+(fila_valida>>2))>>1``` es equivalente a rango superior de 62. Para el límite inferior ```(fila_valida-(fila_valida>>2))>>1)``` equivale a piso((100-100/4)/2), es decir 37. En otras palabras, si el ancho mayor está del 37\% al 62\% de las filas válidas, entonces se puede considerar un círculo.
 
 
-**Cuadrado**: Si las filas válidas son son mayores a cero, entonces son un cuadrado.
+**Cuadrado**: Si las filas válidas son mayores a cero, entonces son un cuadrado.
 
 
 La máquina de estados se representa en la siguiente Figura:
@@ -542,12 +542,12 @@ A continuación se describe cada estado:
          end
 ```
 
-Se pueden eliminar los registros ```was_init_procesamiento```, ```aux_init_procesamiento```, ya que por este estado no se vuelve a pasar hasta que todo el procesamiento se realice, es decir se elimina el problema que se tenía en el digrama funcional de almacenar la orden de *init* (`init_procesamiento`), ya que una vez *init* es uno se inicializa el proceso sin importar los valorees que este tome hasta que no termine.
+Se pueden eliminar los registros ```was_init_procesamiento```, ```aux_init_procesamiento```, ya que por este estado no se vuelve a pasar hasta que todo el procesamiento se realice, es decir se elimina el problema que se tenía en el diagrama funcional de almacenar la orden de *init* (`init_procesamiento`), ya que una vez *init* es uno se inicializa el proceso sin importar los valores que este tome hasta que no termine.
 
 
 Sin embargo, al documentar se identifica el error conceptual dado que por este estado se 
 
-* **CARGAR_DATO**: Se activa *Cargar_Dato*, acción que se realiza en el negledge de *clk*. Para pasar al estado *SEL_COL* se verifica que el pixel traido desde *buffer_ram_dp.v* cumpla con los requerimientos mínimos. Si no se cumple el caso anterior, se verifica si las columnas que han sido procesadas son mayores o iguales a 160, al ser mayores se pasa al estado *ADD_ACH_MAY* esto es similiar a que se cumpla *(Dato>=referencia==0&fila>=n==1)* expresado en la figura de la máquina de estados. Finalmente, si ninguno de los casos anteriores se cumple, se pasa al estado *ADD_COL*.
+* **CARGAR_DATO**: Se activa *Cargar_Dato*, acción que se realiza en el negledge de *clk*. Para pasar al estado *SEL_COL* se verifica que el pixel traído desde *buffer_ram_dp.v* cumpla con los requerimientos mínimos. Si no se cumple el caso anterior, se verifica si las columnas que han sido procesadas son mayores o iguales a 160, al ser mayores se pasa al estado *ADD_ACH_MAY* esto es similar a que se cumpla *(Dato>=referencia==0&fila>=n==1)* expresado en la figura de la máquina de estados. Finalmente, si ninguno de los casos anteriores se cumple, se pasa al estado *ADD_COL*.
 
 ```verilog
 CARGAR_DATO:begin 
@@ -570,7 +570,7 @@ CARGAR_DATO:begin
          end
 ```
 
-* **SEL_COL**: Este estado se encarga de activar *Sel_Col*. Pasa al estado *ADD_ACH_MAY* si el número de columas procesadas es mayor o igual al numero de filas procesadas.Si no se cumple, pasa al estado *ADD_COL*. 
+* **SEL_COL**: Este estado se encarga de activar *Sel_Col*. Pasa al estado *ADD_ACH_MAY* si el número de columnas procesadas es mayor o igual al número de filas procesadas. Si no se cumple, pasa al estado *ADD_COL*. 
 
 ```verilog
 
@@ -604,7 +604,7 @@ CARGAR_DATO:begin
 		 end
 ```
 
-* **ADD_COL**: Activa *Add_Columna*, pasa al estado *Done* si el número de filas procesadas es mayor al numéro de filas de la imagen almacenada y al no cumplirse el anterior pasa al estado *CARGAR_DATO*.
+* **ADD_COL**: Activa *Add_Columna*, pasa al estado *Done* si el número de filas procesadas es mayor al número de filas de la imagen almacenada y al no cumplirse el anterior pasa al estado *CARGAR_DATO*.
 
 ```verilog
 
@@ -637,7 +637,7 @@ CARGAR_DATO:begin
     end
 ```
 
-* **NOTHING** La función es este estado es esperar que se active nuevamente la acción de procesamiento para reiniciar los registros y comenzar el procesamiento de nuevo, esto se hace para que los datos no se sobre no se borren en el momento justo después de terminar.
+* **NOTHING** La función es este estado es esperar que se active nuevamente la acción de procesamiento para reiniciar los registros y comenzar el procesamiento de nuevo, esto se hace para que los datos no se sobren o se borren en el momento justo después de terminar.
 
 ```verilog
  
@@ -655,7 +655,7 @@ CARGAR_DATO:begin
 Se tiene un *Reset* interno para poder reinicializar los registros tal como lo haría el `rst` general.
 
 #### Simulaciones
-Después varios errores corregidos, se logró realizar una simulación de a nivel de compuestas lógicas después de sintetizar, los resultados se visualizan en la siguiente Figura y se inabilitó el `img_generate` del `test_cam_TB.v` para que solo se estén procesando los datos del archivo inicializador circulo.mem.
+Después varios errores corregidos, se logró realizar una simulación de a nivel de compuestas lógicas después de sintetizar, los resultados se visualizan en la siguiente Figura y se inhabilitó el `img_generate` del `test_cam_TB.v` para que solo se estén procesando los datos del archivo inicializador circulo.mem.
 
 ![DIAGRAMA1](./docs/figure/TB_procesamiento.png)
 
@@ -663,8 +663,8 @@ De la simulación se puede deducir que:
 
 * El procesamiento de una figura dura aproximadamente 500 us.
 
-* Cuando *init_procesamiento* está activo mas o menos por 1000 us se hacen 3 procesamientos, el último se genera así init procesamiento no esté activo.
-* El *init_procesamiento* se activa en mas o menos 2000 us y dura medio ciclo de reloj activado. Pese a esto genera el procesamiento que se ilustra en el cambio de `done` entre los 2000 us y 2500 us.
+* Cuando *init_procesamiento* está activo más o menos por 1000 us se hacen 3 procesamientos, el último se genera así init procesamiento no esté activo.
+* El *init_procesamiento* se activa en más o menos 2000 us y dura medio ciclo de reloj activado. Pese a esto genera el procesamiento que se ilustra en el cambio de `done` entre los 2000 us y 2500 us.
 
 * Identifica el color correctamente que es 1, equivalente a rojo el cual es el mismo que está en el archivo circulo.mem. En general:
 
@@ -688,11 +688,11 @@ figure=3, Cuadrado
 
 ### camara.v 
 
-Este bloque es el principal, en este se intancian los bloques anteriormente explicados. Se busca que este bloque tengan la siguiente coneccion interna entre cada bloque.
+Este bloque es el principal, en este se instancian los bloques anteriormente explicados. Se busca que este bloque tenga la siguiente conexión interna entre cada bloque.
 
 ![DIAGRAMA1](/docs/figure/camf.png)
 
-Ahora procedemos a realizar la explicacon de su descripcion de hardware.
+Ahora procedemos a realizar la explicación de su descripción de hardware.
 ```verilog
 module camara #(
 		parameter AW = 15 // Cantidad de bits  de la dirección 
@@ -727,7 +727,7 @@ module camara #(
     
 		   );
 ```
-La señales que estan bajo el tag de Mapa de Memoria son las señales que queremos conectar a nuestros bus de datos. Acontinuacion procedemos a parametros que usara nuestro bloque y los cables con los cuales interconectaremos las instancia de cada uno de los bloques.
+Las señales que están bajo el tag de Mapa de Memoria son las señales que queremos conectar a nuestros bus de datos. A continuación procedemos a parámetros que usara nuestro bloque y los cables con los cuales interconectaremos las instancia de cada uno de los bloques.
 
 ```verilog
 // TAMANO DE ADQUISICION DE LA CAMARA
@@ -761,9 +761,9 @@ La señales que estan bajo el tag de Mapa de Memoria son las señales que querem
 
 ```
 
-Si se presenta confucion al entender las conecciones de procesamiento, he aqui la explicacion. proc_addr_in es una direccion que sale de procesamiento y entra a la memoria para pedir el dato de esa direccion, y proc_data_in es el dato que memoria le manda a procesamiento, este dato corresponde al dato que se encuentra en la direccion previamanete envia.
+Si se presenta confusión al entender las conexiones de procesamiento, he aquí la explicación. proc_addr_in es una dirección que sale de procesamiento y entra a la memoria para pedir el dato de esa dirección, y proc_data_in es el dato que memoria le manda a procesamiento, este dato corresponde al dato que se encuentra en la dirección previamente envía.
 
-Ahora hacer la coneccion del algunos de estos cables con los puertos que no esten vincualados a los bloques instanciados.
+Ahora hacer la conexión del algunos de estos cables con los puertos que no estén vinculados a los bloques instanciados.
 
 ```verilog
 /* ****************************************************************************
@@ -878,7 +878,7 @@ Ahora instanciamos los bloques y conectamos sus entradas y salidas.
 
 	);
 ```
-La ultima parte, esta diseñada para completar los datos faltantes en la transmision VGA. Debido a que le estamos ingresando una imagen de 160 X 120 pixeles y en bloque VGA transmite una de 640 X 480 pixeles,  este codigo nos permite proyectar la imagen 160 X 120 pixeles en una pantalla 640 X 480 pixeles sin problemas.
+La última parte, está diseñada para completar los datos faltantes en la transmisión VGA. Debido a que le estamos ingresando una imagen de 160 X 120 pixeles y en bloque VGA transmite una de 640 X 480 pixeles, este código nos permite proyectar la imagen 160 X 120 pixeles en una pantalla 640 X 480 pixeles sin problemas.
 
 ```verilog
 	/* ****************************************************************************
@@ -925,14 +925,14 @@ Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultraso
 |rw|radar_cntrl_boton_cambiar_grados|0x82005004|
 |rw|radar_cntrl_ultra|0x82005008|
  
-### El modulo servo.v 
+### El módulo servo.v 
  
-Este   dispositivo  funciona con tres  diferentes  pulsos (PWM)  a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
+Este   dispositivo funciona con tres diferentes pulsos (PWM) a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
 
 ![DIAGRAMA1](/docs/figure/pwm.png)
 
- Para lograrlo se  utilizaron divisores de  frecuencias   y una  entrada  para  cambiar grados. Dependiendo  la frecuencia de la  tarjeta  que se usa 50MHz y 100MHz 
-El  divisor 1ms 
+ Para lograrlo se utilizaron divisores de frecuencias   y una entrada para cambiar grados. Dependiendo la frecuencia de la tarjeta que se usa 50MHz y 100MHz 
+El divisor 1ms 
 
 ```verilog
 if(boton_cambiar_grados==1)
@@ -949,7 +949,7 @@ if(boton_cambiar_grados==1)
 				end
 	end   
  ```
- Salida tomada con el osciloscopio  digital  
+ Salida tomada con el osciloscopio digital  
  ![DIAGRAMA1](/docs/figure/prueba1.png)
 
 El  divisor 1,5ms 
@@ -1023,15 +1023,15 @@ Salida tomada con el osciloscopio
 
 ## El  funcionamiento del ultrasonido
 
-(1)	Usando disparador (trigger) se  crean pulso de al menos 10us de señal de alto nivel
-(2)	El Módulo envía automáticamente ocho a 40 kHz y detecta si hay un señal de pulso de vuelta.  
+(1)	Usando disparador (trigger) se crean pulso de al menos 10us de señal de alto nivel
+(2)	El Módulo envía automáticamente ocho a 40 kHz y detecta si hay una señal de pulso de vuelta.  
 
 ![DIAGRAMA1](/docs/figure/senal.png )
 
-(3) SI la señal de retorno, a través del nivel alto, el tiempo de duración de E / S de salida alta esel tiempo desde el envío de ultrasonidos hasta el regreso. Distancia de prueba = (tiempo de alto nivel × velocidad del sonido (340 M / S) / 2)
+(3) SI la señal de retorno, a través del nivel alto, el tiempo de duración de E / S de salida alta es el tiempo desde el envío de ultrasonidos hasta el regreso. Distancia de prueba = (tiempo de alto nivel × velocidad del sonido (340 M / S) / 2)
 
-### El código  ultrasonido 
-Primero con un divisor de frecuencia para  regenerar el trigger 
+### El código ultrasonido 
+Primero con un divisor de frecuencia para regenerar el trigger 
 
 ```verilog
 always @(posedge clk) begin	
@@ -1081,8 +1081,8 @@ Para el  echo que es la señal de entrada
  
  
 ## Motor paso a paso
-Los motores paso a paso seran utilzados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma direccion permiten el desplazamiendo hacia delante o hacia atras, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
-A continuación se muestran las  entradas y salidas del modulo: 
+Los motores paso a paso serán utilizados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma dirección permiten el desplazamiento hacia delante o hacia atrás, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
+A continuación se muestran las entradas y salidas del módulo: 
 
 ```verilog
 `timescale 1ns/1ps
@@ -1107,7 +1107,7 @@ Las salidas **A**,**B**,**C**,**D** se necesitan para poder controlar uno de los
 * 3.) No girar
 * 4.) No girar
 
-Posteriormente se definen algunos parametros y algunos contadores:
+Posteriormente se definen algunos parámetros y algunos contadores:
 ```verilog
     parameter divH = 50000; 
     parameter divL = 100000;
@@ -1125,7 +1125,7 @@ Posteriormente se definen algunos parametros y algunos contadores:
 ```
 
 
-Los parametros **divH** y **divL** se utilizan como tope para el correspondiente contador **countF**, en resumen: *En cada periodo del **clk** se aumenta en 1 el **countF**, cuando el **countF** es igual al valor de **divH** el **trigger** realiza un flanco de subida y cuando **countF** es igual al valor de **divL** entonces el trigger realiza un flanco de bajada, en este ultimo paso el **countF** se reinicia a 0*; asi que el **trigger** es ahora nuestro nuevo reloj; este divisor de frecuencia es necesario debido a que los motores y driver de nuestra referencia ([2byj-48][uln2003]) no funcionan a una frecuencia tan alta (100MHz). En este paso convertimos 100MHz en 1KHz. La formula es:
+Los parametros **divH** y **divL** se utilizan como tope para el correspondiente contador **countF**, en resumen: *En cada periodo del **clk** se aumenta en 1 el **countF**, cuando el **countF** es igual al valor de **divH** el **trigger** realiza un flanco de subida y cuando **countF** es igual al valor de **divL** entonces el trigger realiza un flanco de bajada, en este último paso el **countF** se reinicia a 0*; asi que el **trigger** es ahora nuestro nuevo reloj; este divisor de frecuencia es necesario debido a que los motores y driver de nuestra referencia ([2byj-48][uln2003]) no funcionan a una frecuencia tan alta (100MHz). En este paso convertimos 100MHz en 1KHz. La fórmula es:
 [![N|Solid](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)
 
 
@@ -1160,7 +1160,7 @@ Se hace uso del **trigger** como reloj para cada paso de los motores. Como ya se
 Cada motor tiene su propio contador, ya sea **cuen** o **cuen1**, los cuales se encargan de pasar de un paso a otro (desde el 1 al 8), en cada paso se energizan o se apagan las bobinas correspondientes, tal que se siga la secuencia que indican en el siguiente [LINK](http://robots-argentina.com.ar/MotorPP_basico.htm) o en la imagen:
 
 [![N|Solid](http://robots-argentina.com.ar/img/MotorPP_unipolar_tablaht.gif)](http://robots-argentina.com.ar/img/MotorPP_unipolar_tablaht.gif)
-Para la rotacion antihoraria bastó con cambiar el orden de los pasos.
+Para la rotación antihoraria bastó con cambiar el orden de los pasos.
 
 
 ```verilog
@@ -1244,15 +1244,15 @@ end
 |rw|motor_cntrl_direccion|0x82005800|
 |rw|motor_cntrl_direccion2|0x82005804|
 
-## Implementacion 
+## Implementación 
 
-Con la ayuda de Litex y Vivado, unificamos los modulos anteriormente descritos mediante un Bus Wishbone a un procesador (en este caso el procesador PicoRV32).
+Con la ayuda de Litex y Vivado, unificamos los módulos anteriormente descritos mediante un Bus Wishbone a un procesador (en este caso el procesador PicoRV32).
 
-El primer paso es declarar cada modulo definido anteriormente como una clase en Python3. Para esto, abrimos una terminal e ingresamos 'touch "module".py', en donde "module" corresponde al nombre del modulo que estamos implemtando (OJO esto se hace con el top de cada proyecto).
+El primer paso es declarar cada módulo definido anteriormente como una clase en Python3. Para esto, abrimos una terminal e ingresamos 'touch "module".py', en donde "module" corresponde al nombre del módulo que estamos implementando (OJO esto se hace con el top de cada proyecto).
 
 ![DIAGRAMA1](/docs/figure/Capturamotorpy.jpeg)
 
-Ahora dentro de "module".py, definimos que pines del modulo se conectaran al Bus y cuales saldran del SoC a mis perisfericos, que pines son de entrada y salida, y sobre todo indicar de los pines conectados al bus cuales son registros de lectura y escitura. Esta ultima accion nos establece como quedara nuestro mapa de memoria.
+Ahora dentro de "module".py, definimos que pines del módulo se conectaran al Bus y cuales saldrán del SoC a mis periféricos, que pines son de entrada y salida, y sobre todo indicar de los pines conectados al bus cuales son registros de lectura y escritura. Esta última acción nos establece como quedara nuestro mapa de memoria.
 
 ![DIAGRAMA1](/docs/figure/modulomotorpy.jpeg)
 
@@ -1333,15 +1333,15 @@ class Platform(XilinxPlatform):
         XilinxPlatform.do_finalize(self, fragment)
 
 ```
-Una vez listos estos archivos, abrimos un terminal en la ubicacion de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezarar la creacion del HardWare de nustro SoC segun los parametros y especificaciones ingresadas en los anteriores archivos.
+Una vez listos estos archivos, abrimos un terminal en la ubicación de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezara la creación del HardWare de nustro SoC según los parámetros y especificaciones ingresadas en los anteriores archivos.
 
 ![DIAGRAMA1](/docs/figure/UNO.jpeg)
 
-Una vez creado el HardWare de nuestro SoC, procedemos a crear nuestro SoftWare. Para esto primero tenemos que crear librerias para nuestros modulos, esto podemos hacerlo al copiar cualquier libreria y usarla como plantilla (las librerias se distingue por se arvhivos .h).
+Una vez creado el HardWare de nuestro SoC, procedemos a crear nuestro SoftWare. Para esto primero tenemos que crear librerías para nuestros módulos, esto podemos hacerlo al copiar cualquier librería y usarla como plantilla (las librerías se distingue por se archivos .h).
 
 ![DIAGRAMA1](/docs/figure/CapturamotorH.jpeg)
 
-Dentro de nuestra plantilla de libreria, escrbimos lo siguiente:
+Dentro de nuestra plantilla de librería, escribimos lo siguiente:
 
 ```python
 #ifndef __MOTOR_H		#Cambiamos este nombre segun el modulo que queramos
@@ -1397,7 +1397,7 @@ int main(void)				#Declarar el main del programa
 }
 ```
 
-Ya el resto depende de quiera programar el usuario apartir de los registros de lectura y escritura declarados en cada modulo. Ejemplo:
+Ya el resto depende de quiera programar el usuario a partir de los registros de lectura y escritura declarados en cada módulo. Ejemplo:
 
 ```C
 static void motor_test(void)			#Esta funcion prueba el movimiento de los motores paso a paso y cambia sus direcciones cada 5 segundos.
@@ -1430,13 +1430,13 @@ Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nu
 
 ![DIAGRAMA1](/docs/figure/DOS.jpeg)
 
-Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, para esto abrimos una terminal y ejecutamos 'sudo litex_term /dev/ttyUSB1 --kernel "ubicacion del firmware"' y en nuestra FPGA presionamos el boton CPU_RESET. Al presionar este boton, reiniciamos la BIOS (Basic Input/Output System, Sistema Básico de Entrada y Salida) de la tarjeta permitiendonos cargar nuestro firmware.
+Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, para esto abrimos una terminal y ejecutamos 'sudo litex_term /dev/ttyUSB1 --kernel "ubicación del firmware"' y en nuestra FPGA presionamos el botón CPU_RESET. Al presionar este botón, reiniciamos la BIOS (Basic Input/Output System, Sistema Básico de Entrada y Salida) de la tarjeta permitiéndonos cargar nuestro firmware.
 
 ![DIAGRAMA1](/docs/figure/TRES.jpeg)
 
 ## Montaje
 
-A continuacion presentamos el montaje de nuestro 'Robot':
+A continuación presentamos el montaje de nuestro 'Robot':
 
 
 ![DIAGRAMA1](/docs/figure/RobotMasJose1.jpeg)
@@ -1448,7 +1448,7 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 
 
 
-## Codigo para Test de Camara
+## Código para Test de Cámara
 
 
 
@@ -1502,13 +1502,13 @@ static void camara_test(void)
 #### Pruebas de color
 | Video|Link |
 |---|---|
-|Prueba de Camara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|  
-|Prueba de Camara (Color Verde)|[Verde](https://drive.google.com/file/d/16T3MjzKltFQgiD0hfPjv6t5gTMpveU5H/view?usp=sharing)|  
-|Prueba de Camara (Color Azul)|[Azul](https://drive.google.com/file/d/1-VUkyytr2cszjgOyDO96EMMkKlhhFFQX/view?usp=sharing)|  
-|Prueba de Camara (Color Negro)|[Negro](https://drive.google.com/file/d/1s8l3amipnY6vRhjtKXHgEss0r2nNTBO-/view?usp=sharing)|  
+|Prueba de Cámara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|  
+|Prueba de Cámara (Color Verde)|[Verde](https://drive.google.com/file/d/16T3MjzKltFQgiD0hfPjv6t5gTMpveU5H/view?usp=sharing)|  
+|Prueba de Cámara (Color Azul)|[Azul](https://drive.google.com/file/d/1-VUkyytr2cszjgOyDO96EMMkKlhhFFQX/view?usp=sharing)|  
+|Prueba de Cámara (Color Negro)|[Negro](https://drive.google.com/file/d/1s8l3amipnY6vRhjtKXHgEss0r2nNTBO-/view?usp=sharing)|  
 
 
-## Codigo para Test Radar
+## Código para Test Radar
 ```C
 static void radar_test(void)
 {
@@ -1538,7 +1538,7 @@ static void radar_test(void)
 |---|---|
 |Prueba de Radar|[Radar](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
 
-## Codigo para Test Motor
+## Código para Test Motor
 ```C
 static void motor_test(void)
 {
@@ -1567,7 +1567,7 @@ static void motor_test(void)
 |Prueba de Motores| [Motor](https://drive.google.com/file/d/1vxu_1vOfRV7D9-XfrUjwqPVS9JqH4vS-/view?usp=sharing)|
 |Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
 
-## Codigo para Test Infrarojo
+## Código para Test Infrarrojo
 ```C
 static void infra_test(void)
 {
@@ -1592,7 +1592,7 @@ delay_ms(1000);
 |---|---|
 |Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
 
-## Mapa de memoria infrarojo
+## Mapa de memoria infrarrojo
 |Tipo|Nombre|Dirección|
 |--|--|--|
 |ro|infra_cntrl_salida|0x82006000|
