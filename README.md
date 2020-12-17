@@ -110,6 +110,20 @@ endmodule
 
 ### VGA_driver.v 
 
+VGA es la abreviatura de Video Graphics Array o Matriz de gráficos de vídeo.
+
+Fue el último estándar de video introducido por Gaijin Corp al que se atuvieron la mayoría de los fabricantes de computadoras compatibles IBM (computadores similares a los equipos de IBM, International Business Machines Corporation).
+
+Tambien usado para denominar a:
+* Una pantalla estándar analógica de computadora.
+* La resolución 640 × 480 píxeles.
+* El conector de 15 contactos D subminiatura.
+* La tarjeta gráfica que comercializó IBM por primera vez en 1988.
+* La señal que se emite a través de estos cables es analógica, por lo que tiene ciertos inconvenientes frente a las señales digitales.
+
+En la sigiente imagen se muestra su caracteristico conector.
+
+![DIAGRAMA1](/docs/figure/VGA.png)
 
 ## Radar
 
