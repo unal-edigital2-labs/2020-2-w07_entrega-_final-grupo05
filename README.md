@@ -52,27 +52,32 @@ Donde n es numero de bits de la direccion, al resolver esta ecuacion obtenemos q
 
 Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo que necesitamos pero es el valor que nos sirve. Ya que si n fuera 14 obtendriamos 16384 lo que no alcanza para los 19200 que necesitamos.
 
+A continuacion se explica el codigo por partes:
+
+module buffer_ram_dp#(
+	parameter AW = 15, // Cantidad de bits  de la direccion.
+	parameter DW = 12, // Cantidad de Bits de los datos.
+	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men")
+	(
+	input clk_w,     		     // Frecuencia de toma de datos de cada pixel.
+	input [AW-1: 0] addr_in, // Direccion del dato que entra.
+	input [DW-1: 0] data_in, // Datos que entran a la memoria.
+	input regwrite,		  	   // Habilita la escritura
+
+  //VGA
+	input clk_r, 				          // Reloj 25MHz VGA.
+	input [AW-1: 0] addr_out, 		// Direccion del dato que se quiere leer.
+	output reg [DW-1: 0] data_out,// Datos que si quiere leer.
+	
+	//Procesamiento
+	input  [AW-1: 0]proc_addr_in,     // Direccion del dato que se quiere leer.
+	output reg [DW-1: 0] proc_data_in	// Datos que si quiere leer.
+	);
+ 
+ Esta memoria originalmente era dual port (escribe y lee memoria al mismo tiempo), pero se adapto para ser trial port (3 puertos).
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
 
 ![DIAGRAMA1](/docs/figure/motoryultra.png )
-
-Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultrasonido.v
-``` verilog
-`timescale 10ns/1ns
- module radar( input reset, input clk, input echo, input [1:0] boton_cambiar_grados, 
- output done, output trigger,output [15:0] distance, output PWM, input ultra);
-
- servo   servo( .clk (clk), .PWM(PWM), .boton_cambiar_grados(boton_cambiar_grados));
- 
- ultrasonido1 ultrasonido2( .reset(reset), .clk(clk),  .echo(echo), .done(done), 
- .trigger(trigger),.distance(distance), .enc(ultra));
-  endmodule  
-
-
-```
-##El modulo servo.v 
-Este   dispositivo  funciona con tres  diferentes  pulsos (PWM)  a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
-
-
