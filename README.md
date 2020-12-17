@@ -82,7 +82,24 @@ localparam imaSiz=160*120;  	//El tamaño de mi imagen
 reg [DW-1: 0] ram [0: NPOS-1];  //Crea mi memoria 
 ```
 Un error comun que la gente piensa al crear la memoria es que mi memoria se creo como una matriz. Mi memoria NO es una matriz, es mejor pensarlar como un vector de 2^n posiciones, y que que cada posicion contiene un valor de 12 bits.
+```verilog
+// Escritura  de la memoria port 1.
+always @(posedge clk_w) begin	      //Quiere decir que siempre que halla un flanco de subida de reloj de escritura se activa
+       if (regwrite == 1)             //Habilita la escritura de la memoria
+             ram[addr_in] <= data_in; //Escribe los datos de entrada en la direccion que addr_in se lo indique.
+end
 
+// Lectura  de la memoria port 2.
+always @(posedge clk_r) begin  		  //Quiere decir que siempre que halla un flanco de subida de reloj de escritura se activa
+		data_out <= ram[addr_out];// Se leen los datos de las direcciones 
+end
+
+// Lectura  de la memoria port 3.
+always @(proc_addr_in) begin	//Se activa cada vez que lo solicite procesamiento
+proc_data_in<=ram[proc_addr_in];//Lee cada vez que el bloque procesamiento lo solicita
+end
+```
+La razon de que existan relojes diferentes al de la nexysA7 de 100M Hz, es por que la Camara OV7670 y las pantallas VGA operan una frecuencia cuatro veces menor a la frecuencia interna de la nexysA7 por lo que con ayuda de Vivado se crearon los bloques clk24_25_nexys4.v , cclk24_25_nexys4_0.v y clk24_25_nexys4_clk_wiz.v que no son otra cosa que divisores de frecuencia que convierten el reloj de 100M Hz en dos relojes de 24M Hz para la Camara y 25M Hz par el VGA.
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
