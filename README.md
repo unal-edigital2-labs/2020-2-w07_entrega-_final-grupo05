@@ -244,7 +244,9 @@ Esta comunicacion puede ser implementada en verilog. Pero por cuestiones de tiem
 
 ![DIAGRAMA1](/docs/figure/ard.png)
 
-Pero si tener en cuenta que hay que realizar la siguiente coneccion entre la camara y arduino, una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camar se apaga.
+Pero si tener en cuenta que hay que realizar la siguiente coneccion entre la camara y arduino, una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camara se apaga.
+
+
 
 ### procesamiento.v 
 
