@@ -499,23 +499,81 @@ Ahora dentro de "module".py, definimos que pines del modulo se conectaran al Bus
 
 Ahora, procedemos a abrir el archivo buildSoCproject.py, en donde:
 ```python
-from migen import *
+from migen import *				#Se declaran las librerias que Litex y Migen usaran
 from migen.genlib.io import CRG
 from migen.genlib.cdc import MultiReg
 
 import nexys4ddr as tarjeta
 #import c4e6e10 as tarjeta
 
-from litex.soc.integration.soc_core import *
+from litex.soc.integration.soc_core import *	
 from litex.soc.integration.builder import *
 from litex.soc.interconnect.csr import *
 
-from litex.soc.cores import gpio
+from litex.soc.cores import gpio		#Los modulos (en Python) que se usaran
 from module import rgbled
-from module import sevensegment
-from module import vgacontroller
-from module import camara
-from module import radar
 from module import motor
 
+class BaseSoC(SoCCore):
+	def _init_(self):
+		platform = tarjeta.Platform()
+	
+		#motor 
+		platform.add_source("module/verilog/motor/motor.v") #La ubicacion de la descripcion de HardWare (archivos verilog) de los modulos
+
+		
+		# SoC with CPU				
+		SoCCore._init_(self, platform,
+ 			cpu_type="picorv32",			#El CPU (Central Processing Unit, Unidad Central de Proceso')
+#			cpu_type="vexriscv",
+			clk_freq=100e6,				#La frecuencia a la que opera el reloj
+			integrated_rom_size=0x8000,		#El tamaño de la ROM (Read Only Memory, memoria de solo lectura)
+			integrated_main_ram_size=10*1024)	#El tamaño de la RAM (Random Access Memory, memoria de acceso aleatorio)
+
+		# motor
+		SoCCore.add_csr(self,"motor_cntrl") # Incluir mapa de memoria
+		self.submodules.radar_cntrl = motor.Motor(platform.request("A"),platform.request("B"),platform.request("C"),platform.request("D"),platform.request("A1"),platform.request("B1"),platform.request("C1"),platform.request("D1"))  				#Instanciar el modulo
+ # Build ----(no toca molestarlo)----------------------------------------------------------------------------------------
+if __name__ == "__main__":
+	builder = Builder(BaseSoC(),csr_csv="Soc_MemoryMap.csv") #Crea el mapa de memoria
+	builder.build()   #Construye el HardWare del SoC 
+
+
 ```
+Ahora, creamos un nuevo archivo de Python en el cual declaramos los pines que no estan conectados al Bus Wishbone, en este declaramos:
+```python
+from litex.build.generic_platform import *			#La Plataforma (Vivado o Quartus) que se quiere usar,
+from litex.build.xilinx import XilinxPlatform, VivadoProgrammer #esto segun la FPGA que se quiere usar
+
+#MOTOR 								
+    ("A1",0,Pins("H4"),IOStandard("LVCMOS33")),                 #Declarar estos pines segun las caracteristicas de la FPGA usada
+    ("B1",0,Pins("H1"),IOStandard("LVCMOS33")),
+    ("C1",0,Pins("G1"),IOStandard("LVCMOS33")),
+    ("D1",0,Pins("G3"),IOStandard("LVCMOS33")),
+    ("A",0,Pins("A13"),IOStandard("LVCMOS33")),
+    ("B",0,Pins("A15"),IOStandard("LVCMOS33")),
+    ("C",0,Pins("B16"),IOStandard("LVCMOS33")),
+    ("D",0,Pins("B18"),IOStandard("LVCMOS33")),
+    
+# Platform -----------------------------------------------------------------------------------------
+class Platform(XilinxPlatform):
+    default_clk_name = "clk"			#Declarar el reloj de la FPGA
+    default_clk_period = 1e9/100e6 
+
+    def _init_(self):
+        XilinxPlatform._init_(self, "xc7a100t-CSG324-1", _io, toolchain="vivado")      #Especificar si hay algun o algunos pines especiales (como reloj de salida)
+        self.add_platform_command("set_property INTERNAL_VREF 0.750 [get_iobanks 34]")
+        self.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets cam_pclk]")
+        self.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets cam_href]")
+        self.add_platform_command("set_property CLOCK_DEDICATED_ROUTE FALSE [get_nets cam_vsync]")
+
+    def create_programmer(self):
+        return VivadoProgrammer()
+
+    def do_finalize(self, fragment):
+        XilinxPlatform.do_finalize(self, fragment)
+
+```
+Una vez listos estos archivos, abrimos un terminal en la ubicacion de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezarar la creacion del HardWare de nustro SoC segun los parametros y especificaciones ingresadas en los anteriores archivos.
+
+![DIAGRAMA1](/docs/figure/UNO.jpg)
