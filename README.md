@@ -692,6 +692,43 @@ Este bloque es el principal, en este se intancian los bloques anteriormente expl
 
 ![DIAGRAMA1](/docs/figure/camf.png)
 
+Ahora procedemos a realizar la explicacon de su descripcion de hardware.
+```verilog
+module camara #(
+		parameter AW = 15 // Cantidad de bits  de la dirección 
+		)(
+	//Entradas de camara
+	    	input  clk,           	// Reloj de la FPGA
+    		input  rst,	 	// Reset button. Externo
+
+	// Salida
+		output  VGA_Hsync_n,  // Horizontal sync output.
+		output  VGA_Vsync_n,  // Vertical sync output.
+		output  [3:0] VGA_R,  // 4-bit VGA red output.
+		output  [3:0] VGA_G,  // 4-bit VGA green output.
+		output  [3:0] VGA_B,  // 4-bit VGA blue output.
+
+	//CAMARA input/output conexiones de la camara al modulo principal ********************************
+		output  CAM_xclk,		// System  clock input de la cï¿½mara.
+		output  CAM_pwdn,		// Power down mode.
+		input  CAM_pclk,		// Sennal PCLK de la camara. 
+		input  CAM_href,		// Sennal HREF de la camara. 
+		input  CAM_vsync,		// Sennal VSYNC de la camara.
+		input  [7:0]CAM_px_data,	//Datos de la camara
+		
+	// Mapa de memoria
+		// Escitura
+		input init_procesamiento,
+		
+		//Lectura
+		output [1:0] color, 		//Me dice de que color es la figura de la imagen 1: Rojo, 2:Green, 3:Blue
+		output [1:0] figure, 		//Me dice que figura se observa en la imagen 1: Triángulo, 2: Círculo, 3: cuadrado
+		output    done			//Me dice si ya se acabo de procesar la imagen
+    
+		   );
+```
+
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
