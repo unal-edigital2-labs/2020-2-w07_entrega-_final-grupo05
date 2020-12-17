@@ -3,7 +3,7 @@
 
 * >Jose Alvaro Celis Lopez
 * >Julian David Pulido Castañeda  C.C. 1000163697
-* >Esteban Landino
+* >Esteban Landino Fajardo
 * >Julian David Escobar Jamioy C.C. 1122786713
 
 ## INTRODUCCIÓN
@@ -727,7 +727,175 @@ module camara #(
     
 		   );
 ```
+La señales que estan bajo el tag de Mapa de Memoria son las señales que queremos conectar a nuestros bus de datos. Acontinuacion procedemos a parametros que usara nuestro bloque y los cables con los cuales interconectaremos las instancia de cada uno de los bloques.
 
+```verilog
+// TAMANO DE ADQUISICION DE LA CAMARA
+
+	// Tamaño de la imagne QQVGA
+	parameter CAM_SCREEN_X = 160; 		// 640 / 4. Elegido por preferencia, menos memoria usada.
+	parameter CAM_SCREEN_Y = 120;    	// 480 / 4.
+	localparam DW=12; // Se determina de acuerdo al tamaño de la data, formaro RGB444 = 12 bites.
+
+	// coneciondes de los relojes
+	wire clk100M;           // Reloj de un puerto de la Nexys 4 DDR entrada.
+	wire clk25M;		// Para guardar el dato del reloj de la Pantalla (VGA 680X240 y DP_RAM).
+	wire clk24M;		// Para guardar el dato del reloj de la camara.
+
+	// Coneccion dual por ram
+	localparam imaSiz= CAM_SCREEN_X*CAM_SCREEN_Y; // Posición n+1 del tamañp del arreglo de pixeles de acuerdo al formato.
+	wire [AW-1: 0] DP_RAM_addr_in;		// Conección  Direccion entrada.
+	wire [DW-1: 0] DP_RAM_data_in;      	// Coneccion Dato entrada.
+	wire DP_RAM_regW;			// Enable escritura de dato en memoria .
+	reg  [AW-1: 0] DP_RAM_addr_out;		//Registro de la dirección de memoria. 
+
+	// Coneccion VGA Driver
+	wire [DW-1:0] data_mem;	    		// Salida de dp_ram al driver VGA
+	wire [DW-1:0] data_RGB444;  		// salida del driver VGA a la pantalla
+	wire [9:0] VGA_posX;			// Determinar la posición en X del pixel en la pantalla 
+	wire [9:0] VGA_posY;			// Determinar la posición de Y del pixel en la pantalla
+
+	// Coneccion procesamiento
+	wire [AW-1:0]proc_addr_in;		//Coneccion Direccion de Entrada
+	wire [DW-1:0]proc_data_in;		//Coneccion Dato de de Entrada
+
+```
+
+Si se presenta confucion al entender las conecciones de procesamiento, he aqui la explicacion. proc_addr_in es una direccion que sale de procesamiento y entra a la memoria para pedir el dato de esa direccion, y proc_data_in es el dato que memoria le manda a procesamiento, este dato corresponde al dato que se encuentra en la direccion previamanete envia.
+
+Ahora hacer la coneccion del algunos de estos cables con los puertos que no esten vincualados a los bloques instanciados.
+
+```verilog
+/* ****************************************************************************
+	Asignación de la información de la salida del driver a la pantalla
+	del regisro data_RGB444
+	**************************************************************************** */
+	assign VGA_R = data_RGB444[11:8]; 	//los 4 bites más significativos corresponden al color ROJO (RED) 
+	assign VGA_G = data_RGB444[7:4];  	//los 4 bites siguientes son del color VERDE (GREEN)
+	assign VGA_B = data_RGB444[3:0]; 	//los 4 bites menos significativos son del color AZUL(BLUE)
+
+
+	/* ****************************************************************************
+	Asignacion de las seales de control xclk pwdn y reset de la camara
+	**************************************************************************** */
+
+	assign CAM_xclk = clk24M;		// AsignaciÃ³n reloj cÃ¡mara.
+	assign CAM_pwdn = 0;			// Power down mode.
+	
+
+```
+
+Ahora instanciamos los bloques y conectamos sus entradas y salidas.
+
+```verilog
+
+	/* ****************************************************************************
+	Se uso "IP Catalog >FPGA Features and Desing > Clocking > Clocking Wizard"  y general el ip con Clocking Wizard
+	el bloque genera un reloj de 25Mhz usado para el VGA  y un reloj de 24 MHz
+	utilizado para la camara , a partir de una frecuencia de 100 Mhz que corresponde a la Nexys 4
+	**************************************************************************** */
+	clk24_25_nexys4 clk25_24(
+	.clk24M(clk24M),		//Reloj para la camara
+	.clk25M(clk25M),		//Reloj para el VGA y la memoria
+	.reset(rst),			//Reset
+	.clk100M(clk)			//Reloj internode la NexysA7
+	);
+
+	/* ****************************************************************************
+	Modulo de captura de datos /captura_de_datos_downsampler = cam_read
+	**************************************************************************** */
+	cam_read #(AW,DW) cam_read
+	(
+			.CAM_px_data(CAM_px_data),		//Datos de entrada
+			.CAM_pclk(CAM_pclk),			//Reloj de pixel
+			.CAM_vsync(CAM_vsync),			//Transmision de imagen
+			.CAM_href(CAM_href),			//Transmision de fila
+			.rst(rst),				//Reset
+	
+			.DP_RAM_regW(DP_RAM_regW), 		//Habilita o inhabilita la escritura de la memoria       
+			.DP_RAM_addr_in(DP_RAM_addr_in),	//Direccion donde se quiere escribir
+			.DP_RAM_data_in(DP_RAM_data_in)		//Dato que se quiere escribir
+
+		);
+
+	/******************************************************************************
+	En esta parte se agrega el m�dulo de procesamiento
+
+	*******************************************************************************/
+	procesamiento my_procesamiento(
+			//entradas
+			.clk(clk),				//Reloj de la NexysA7
+			.rst(rst),				//Reset
+			.proc_addr_in(proc_addr_in), 		// Dirección entrada dada para el Buffer.
+	    		.proc_data_in(proc_data_in),		// Datos que salen del Buffer.
+	    
+	    		// Mapa de memoria
+	    
+	    		//Entradas
+	    		.init_procesamiento(init_procesamiento), //Señal que me indica que se quiere iniciar el procesmiento de la imagen 
+	    		//salidas
+	    		.color(color),				 //Color que se obtuvo del procesamiento
+	    		.figure(figure),			 //Figura que se obtuvo del procesamiento
+	    		.done(done)				 //Procesmiento concluido
+	    
+   );
+
+	/* ****************************************************************************
+	buffer_ram_dp buffer memoria dual port y reloj de lectura y escritura separados
+	Se debe configurar AW  segn los calculos realizados en el Wp01
+	se recomiendia dejar DW a 8, con el fin de optimizar recursos  y hacer RGB 332
+	**************************************************************************** */
+	buffer_ram_dp DP_RAM(
+		// Entradas.
+		.clk_w(CAM_pclk),			// Frecuencia de toma de datos de cada pixel.
+		.addr_in(DP_RAM_addr_in), 		// Direccion entrada dada por el capturador.
+		.data_in(DP_RAM_data_in),		// Datos que entran de la camara.
+		.regwrite(DP_RAM_regW), 	       	// Habilita o inhabilita la escritura.
+		.clk_r(clk25M), 			// Reloj VGA.
+		.addr_out(DP_RAM_addr_out),		// Direccion salida dada por VGA.
+		// Salida.
+		.data_out(data_mem),			// Datos enviados a la VGA.
+		//.reset(rst)                           //(Sin usar)
+		
+		// Salidas procesador
+		.proc_data_in(proc_data_in),		//Dato enviado a procesador
+    		.proc_addr_in(proc_addr_in)		//Direecion recivida de procesador
+	);
+
+	/* ****************************************************************************
+	VGA_Driver640x480
+	**************************************************************************** */
+	VGA_Driver VGA_640x480 // Necesitamos otro driver.
+	(
+		.rst(rst),
+		.clk(clk25M), 			// 25MHz  para 60 hz de 160x120.
+		.pixelIn(data_mem), 		// Entrada del valor de color  pixel RGB 444.
+		.pixelOut(data_RGB444),		// Salida de datos a la VGA. (Pixeles). 
+		.Hsync_n(VGA_Hsync_n),		// Sennal de sincronizacion en horizontal negada para la VGA.
+		.Vsync_n(VGA_Vsync_n),		// Sennal de sincronizacion en vertical negada  para la VGA.
+		.posX(VGA_posX), 		// Posicion en horizontal del pixel siguiente.
+		.posY(VGA_posY) 		// Posicion en vertical  del pixel siguiente.
+
+	);
+```
+La ultima parte, esta diseñada para completar los datos faltantes en la transmision VGA. Debido a que le estamos ingresando una imagen de 160 X 120 pixeles y en bloque VGA transmite una de 640 X 480 pixeles,  este codigo nos permite proyectar la imagen 160 X 120 pixeles en una pantalla 640 X 480 pixeles sin problemas.
+
+```verilog
+	/* ****************************************************************************
+	Logica para actualizar el pixel acorde con la buffer de memoria y el pixel de
+	VGA si la imagen de la camara es menor que el display VGA, los pixeles
+	adicionales seran iguales al color del ultimo pixel de memoria.
+	**************************************************************************** */
+	always @ (VGA_posX, VGA_posY) begin
+			if ((VGA_posX>CAM_SCREEN_X-1)|(VGA_posY>CAM_SCREEN_Y-1)) //Posicion n+1(160*120), en buffer_ram_dp.v se le asigna el color negro.
+				DP_RAM_addr_out = imaSiz;
+			else
+				DP_RAM_addr_out = VGA_posX + VGA_posY * CAM_SCREEN_X;// Calcula posicion.
+	end
+
+
+endmodule
+```
 
 ## Radar
 
