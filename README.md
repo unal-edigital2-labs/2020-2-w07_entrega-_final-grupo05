@@ -60,25 +60,16 @@ Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonid
 
 Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultrasonido.v
 ``` verilog
-module restador#(
-parameter n=2
-)
-(
-    
-    clk,
-    A,
-    B,
-    INIT,
-    C
-    );
-    
-    
-    input clk;
-    input [n:0]A;
-    input [n:0]B;
-    input INIT;
-    
-    output reg[n+1:0] C;
+`timescale 10ns/1ns
+ module radar( input reset, input clk, input echo, input [1:0] boton_cambiar_grados, 
+ output done, output trigger,output [15:0] distance, output PWM, input ultra);
+
+ servo   servo( .clk (clk), .PWM(PWM), .boton_cambiar_grados(boton_cambiar_grados));
+ 
+ ultrasonido1 ultrasonido2( .reset(reset), .clk(clk),  .echo(echo), .done(done), 
+ .trigger(trigger),.distance(distance), .enc(ultra));
+  endmodule  
+
 
 ```
 
