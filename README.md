@@ -184,3 +184,82 @@ if(boton_cambiar_grados==2)
 
  
  
+
+![DIAGRAMA1](/docs/figure/prueva1.5ms.png )
+
+Para reiniciar el ciclo
+
+
+```verilog
+
+ if(contador >=((frecuencia*20)/1000)) // Se reinicia en 20 ms
+//	begin
+//		contador <= 0;
+//	end
+
+
+```
+
+Salida tomada con el osciloscopio   
+
+![DIAGRAMA1](/docs/figure/prueva2ms.png )
+
+## El  funcionamiento del ultrasonido
+
+(1)	Usando disparador (trigger) se  crean pulso de al menos 10us de señal de alto nivel
+(2)	El Módulo envía automáticamente ocho a 40 kHz y detecta si hay un señal de pulso de vuelta.  
+
+![DIAGRAMA1](/docs/figure/senal.png )
+
+(3) SI la señal de retorno, a través del nivel alto, el tiempo de duración de E / S de salida alta esel tiempo desde el envío de ultrasonidos hasta el regreso. Distancia de prueba = (tiempo de alto nivel × velocidad del sonido (340 M / S) / 2)
+
+### El código  ultrasonido 
+Primero con un divisor de frecuencia para  regenerar el trigger 
+
+```verilog
+always @(posedge clk) begin	
+	if(enc)
+	begin
+		if (~reset) 
+		begin 
+			countF <= 0;
+			trigger <= 0;
+		end 
+		else 
+		begin	countF <= countF +1; //en caso de no funcionar probar con begin end en cada if
+			if (countF < divH+1)
+				trigger <= 1;
+			else
+			if (countF < divL+1)
+				trigger <= 0;
+			else 
+				countF <= 0;
+	     end
+	end
+	else
+	begin
+	trigger <= 0;
+	end
+	end
+```
+Para el  echo que es la señal de entrada 
+```verilog
+//echo
+	always @(posedge clk) begin
+		if (echo == 1) begin
+			countEcho <= countEcho +1;
+			done <= 0;
+		end
+		else
+		begin
+			if (echo == 0 & countEcho != 0)	
+				distance <= (~countEcho*340)/2040000;//para pasar a centimetros 
+				//distance <= countEcho/58000;
+				countEcho <=0;
+				done <= 1; 	
+		end
+		
+	end
+```
+ 
+ 
