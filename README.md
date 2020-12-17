@@ -100,6 +100,17 @@ proc_data_in<=ram[proc_addr_in];//Lee cada vez que el bloque procesamiento lo so
 end
 ```
 La razon de que existan relojes diferentes al de la nexysA7 de 100M Hz, es por que la Camara OV7670 y las pantallas VGA operan una frecuencia cuatro veces menor a la frecuencia interna de la nexysA7 por lo que con ayuda de Vivado se crearon los bloques clk24_25_nexys4.v , cclk24_25_nexys4_0.v y clk24_25_nexys4_clk_wiz.v que no son otra cosa que divisores de frecuencia que convierten el reloj de 100M Hz en dos relojes de 24M Hz para la Camara y 25M Hz par el VGA.
+```verilog
+initial begin				//Me establece los valores iniciales de mi memoria
+	$readmemh(imageFILE, ram);	//Carga la imagen d 19200 pixeles
+	ram[imaSiz] = 12'h0;		//Llena con negro el resto de mi memoria depues de carga la imagen
+end
+endmodule
+```
+
+### VGA_driver.v 
+
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
