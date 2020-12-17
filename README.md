@@ -495,5 +495,5 @@ El primer paso es declarar cada modulo definido anteriormente como una clase en 
 
 Ahora dentro de "module".py, definimos que pines del modulo se conectaran al Bus y cuales saldran del SoC a mis perisfericos, que pines son de entrada y salida, y sobre todo indicar de los pines conectados al bus cuales son registros de lectura y escitura. Esta ultima accion nos establece como quedara nuestro mapa de memoria.
 
-
+![DIAGRAMA1](/docs/figure/modulomotorpy.jpeg
 
