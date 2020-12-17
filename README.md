@@ -2,7 +2,7 @@
 [![N|Solid](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)
 
 * >Jose Alvaro Celis Lopez
-* >Julian David Pulido Castañeda
+* >Julian David Pulido Castañeda  C.C. 1000163697
 * >Esteban Landino
 * >Julian David Escobar Jamioy
 
@@ -244,15 +244,19 @@ Esta comunicacion puede ser implementada en verilog. Pero por cuestiones de tiem
 
 ![DIAGRAMA1](/docs/figure/ard.png)
 
-Pero si tener en cuenta que hay que realizar la siguiente coneccion entre la camara y arduino, una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camara se apaga.
+Pero si tener en cuenta que hay que realizar esta coneccion entre la camara y arduino (no aparece, pero toca conectar la tierra de la NexysA7, la tierra de Arduino y la tierra de la camara al mismo punto), una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camara se apaga.
 
 Vsync y Hsync o Href, son las señales me sincronizan la transmision de filas de una imagen. Como podemos ver el el diagrama de tiempo, cada pulso de Vsync me indica la transmision de de una imagen y cuando Href esta me indica la transmision de una fila de la imagen .
 
 ![DIAGRAMA1](/docs/figure/tem.png)
 
-D[7:0] son los datos que me entrega la camara y pclk es mi reloj de transmision de pixel.
+D[7:0] son los datos que me entrega la camara y pclk es mi reloj de transmision de pixel. Mi camara por defecto me entraga un pixel de 2 bytes o 16 bits, pero solo tenemos 8 pines de salida, por lo que se realiza la transmision en 2 tiempos se envia un byte y despues el otro, para condinar este envio usamos pclk. Como podemos ver en la imagen, cada flanco de subida de pclk se hace envia un byte y como podemos ver esta transmision se dara mientras Href sea 1.
 
 ![DIAGRAMA1](/docs/figure/444.png)
+
+En la imagen tambien podemos ver que, cuando le pedimos el formato RGB444 a nuestra camara nos envia todo el componente Rojo en los cuatro bits menos significativos del primer byte del pixel y nos envia el resto en el segundo byte del pixel respectivamente, los cuatro bits mas significativos para Verde y los cuatro menos significativos para Azul.
+
+El ultimo pin xclk es un reloj de 24M Hz que entra en la camara con el fin de cordinar las operacones entre la camara y el dispositivo al que se conecto, en nuestro caso la NexysA7.
 
 ### procesamiento.v 
 
