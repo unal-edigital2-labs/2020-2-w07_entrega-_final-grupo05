@@ -4,7 +4,7 @@
 * >Jose Alvaro Celis Lopez
 * >Julian David Pulido Castañeda  C.C. 1000163697
 * >Esteban Landino
-* >Julian David Escobar Jamioy
+* >Julian David Escobar Jamioy C.C. 1122786713
 
 ## INTRODUCCIÓN
 Ha inicio del semestre 2020-2, se planteo el desarrolo de un System on Chip (SoC) para un sistema autónmo capaz de navegar y trazar un laberinto al mismo tiempo que procese imagenes de objetos por color.
