@@ -25,7 +25,7 @@ Ahora procedemos a explicar cada uno.
 ## Camara
 La camara usada fue la OV7670, sus caracteristicas principales son:
 
-* Es una camara de video
+* Es una camara de video de 640 X 480 pixeles.
 * No posee memoria de almacenamiento 
 * La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
 
@@ -40,7 +40,8 @@ Para conocer las dimensiones de mi memoria, primero necesito conocer la dimensio
 * 160 X 120 Pixeles
 * Formato RGB444 (12 bits)
 
-Lo que quiere decir que queremos una imagen de 160 X 120 = 19200 pixeles o 230400 bits. 
+Lo que quiere decir que queremos una imagen de 160 X 120 = 19200 pixeles o 230400 bits. Uno de los factores para elegir este tamaño es que si queremos la imagen de 640 X 480, necesitariamos un espacio de 640 X 480 =307200 pixeles o 3686400 bits, y la NexysA7 tiene 1188000 bits lo que no alcanza.
+
 
 ![DIAGRAMA1](/docs/figure/Mem.png)
 
@@ -147,6 +148,9 @@ Por defecto, la nexysA7 hace uso de la coneccion que se ve en la figura, lo que 
 
 ![DIAGRAMA1](/docs/figure/VGAn.png)
 
+Como podemos ver en la imagen, el puerto VGA de la nexysA7 esta diseñado para la transmision de datos en formato no superior a RGB444. Esta es una de la principales razones por la que se eligio este formato para la imagen. 
+
+Ahora, procedemos a explicar el codigo:
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
