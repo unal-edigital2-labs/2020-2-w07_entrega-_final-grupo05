@@ -223,7 +223,7 @@ La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero
 * SCL    | SCCB serial interface clock input
 * SDA    | SCCB serial interface data I/O
 * VSync  | Vertical Sync Output
-* HSync  | Horizontal Sync Output
+* Href   | Href Output
 * pclk   | Pixel clock output
 * xclk   | System clock input 
 * D[7:0] | YUV/RGB video component output
@@ -246,7 +246,13 @@ Esta comunicacion puede ser implementada en verilog. Pero por cuestiones de tiem
 
 Pero si tener en cuenta que hay que realizar la siguiente coneccion entre la camara y arduino, una vez configurados los registros podemos desonectar este montaje. Los registros que modificamos se reiniciaran si la camara se apaga.
 
+Vsync y Hsync o Href, son las señales me sincronizan la transmision de filas de una imagen. Como podemos ver el el diagrama de tiempo, cada pulso de Vsync me indica la transmision de de una imagen y cuando Href esta me indica la transmision de una fila de la imagen .
 
+![DIAGRAMA1](/docs/figure/tem.png)
+
+D[7:0] son los datos que me entrega la camara y pclk es mi reloj de transmision de pixel.
+
+![DIAGRAMA1](/docs/figure/444.png)
 
 ### procesamiento.v 
 
