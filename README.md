@@ -1284,7 +1284,7 @@ A continuacion presentamos el montaje de nuestro 'Robot':
 
 
 
-```verilog
+```C
 static void camara_test(void)
 {
 	unsigned short figura=0;   /* Se inicializa */
@@ -1341,7 +1341,7 @@ static void camara_test(void)
 
 
 ## Codigo para Test Radar
-```verilog
+```C
 static void radar_test(void)
 {
 		
@@ -1371,7 +1371,7 @@ static void radar_test(void)
 |Prueba de Radar|[Radar](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
 
 ## Codigo para Test Motor
-```verilog
+```C
 static void motor_test(void)
 {
 		
@@ -1400,7 +1400,7 @@ static void motor_test(void)
 |Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
 
 ## Codigo para Test Infrarojo
-```verilog
+```C
 static void infra_test(void)
 {
 
