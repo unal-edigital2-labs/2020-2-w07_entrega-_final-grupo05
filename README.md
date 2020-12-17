@@ -704,3 +704,18 @@ Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, p
 ## Montaje
 
 A continuacion presentamos el montaje de nuestro 'Robot':
+
+
+![DIAGRAMA1](/docs/figure/RobotMasJose1.jpeg)
+
+
+| Video|Link |
+|---|---|
+|Prueba de Motores| [Motor](https://drive.google.com/file/d/1vxu_1vOfRV7D9-XfrUjwqPVS9JqH4vS-/view?usp=sharing)|
+|Prueba de Camara (Color Rojo)|[Rojo](https://drive.google.com/file/d/1tCIeTYwqsJew9dG4_uF4cyY1tqEJtgdT/view?usp=sharing)|
+|Prueba de Camara (Color Verde)|[Verde](https://drive.google.com/file/d/16T3MjzKltFQgiD0hfPjv6t5gTMpveU5H/view?usp=sharing)|
+|Prueba de Camara (Color Azul)|[Azul](https://drive.google.com/file/d/1-VUkyytr2cszjgOyDO96EMMkKlhhFFQX/view?usp=sharing)|
+|Prueba de Camara (Color Negro)|[Negro](https://drive.google.com/file/d/1s8l3amipnY6vRhjtKXHgEss0r2nNTBO-/view?usp=sharing)|
+|Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
+|Prueba desplazamiento|[Desplazamiento](https://drive.google.com/file/d/1jekEaVBzeqHzb1kYR88ucrzehyG0tczz/view?usp=sharing)|
+|Prueba de Ultrasonido|[Ultrasonido](https://drive.google.com/file/d/1fXxFsEHxlo74n4mNj2BBKnfkOcixVV7y/view?usp=sharing)|
