@@ -22,11 +22,20 @@ Por cuestiones de tiempo y logsitica se trabajaron e implementaron los siguiente
 
 Ahora procedemos a explicar cada uno.
 
-### Camara
+## Camara
 La camara usada fue la OV7670, sus caracteristicas principales son:
 
 * Es una camara de video
 * No posee memoria de almacenamiento 
 * La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
 
-El driver camara esta compuesto
+El driver camara esta compuesto por:
+
+### buffer_ram_dp.v 
+
+Como se dijo anteriormente, la camar no posee memoria por lo que toca crearla.
+
+Para conocer las dimensiones de mi memoria, primero necesito conocer la dimensiones y caracteristicas de la imagen que queremos. E nuestro caso nosostros queremos una imagen:
+
+* 160 X 120 Pixeles
+* Formato RGB444
