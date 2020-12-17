@@ -53,10 +53,10 @@ Donde n es número de bits de la dirección, al resolver esta ecuación obtenemo
 
 Y cuando hacemos 2^n con n igual 15 obtenemos 32768 lo que casi el doble de lo que necesitamos, pero es el valor que nos sirve. Ya que si n fuera 14 obtendríamos 16384 lo que no alcanza para los 19200 que necesitamos.
 
-A continuación se explica el código por partes:
+A continuación, se explica el código por partes:
 ```verilog
 module buffer_ram_dp#(
-	parameter AW = 15, // Cantidad de bits  de la direccion.
+	parameter AW = 15, // Cantidad de bits de la direccion.
 	parameter DW = 12, // Cantidad de Bits de los datos.
 	parameter imageFILE = "/home/esteban/UNAL/GitHub/Digital_II/Camara_con_procesamiento/src/sources/images/circulo.men") //Con el fin de conocer si la memoria funciona se precarga con una imagen
 	(
@@ -82,7 +82,7 @@ localparam NPOS = 2 ** AW;      // Es equivalente a 2^n
 localparam imaSiz=160*120;  	//El tamaño de mi imagen
 reg [DW-1: 0] ram [0: NPOS-1];  //Crea mi memoria 
 ```
-Un error comun que la gente piensa al crear la memoria es que mi memoria se creo como una matriz. Mi memoria NO es una matriz, es mejor pensarlar como un vector de 2^n posiciones, y que que cada posicion contiene un valor de 12 bits.
+Un error común que la gente piensa al crear la memoria es que mi memoria se creó como una matriz. Mi memoria NO es una matriz, es mejor pensarla como un vector de 2^n posiciones, y que cada posición contiene un valor de 12 bits.
 ```verilog
 // Escritura  de la memoria port 1.
 always @(posedge clk_w) begin	      //Quiere decir que siempre que halla un flanco de subida de reloj de escritura se activa
@@ -150,7 +150,7 @@ Por defecto, la nexysA7 hace uso de la conexión que se ve en la figura, lo que 
 
 Como podemos ver en la imagen, el puerto VGA de la nexysA7 está diseñado para la transmisión de datos en formato no superior a RGB444. Esta es una de las principales razones por la que se eligió este formato para la imagen. 
 
-A continuación se presenta el código:
+A continuación, se presenta el código:
 ```verilog
 module VGA_Driver #(DW = 12) (
 	input rst,			//Reset
@@ -200,12 +200,12 @@ always @(posedge clk) begin
 				countY <= 0;			//Reinica countY
 			end 
 			else begin
-				countY <= countY + 1;		//Quire decir que acaba de transmitir la fila y puede pasar a la siguiente
+				countY <= countY + 1;		//Quiere decir que acaba de transmitir la fila y puede pasar a la siguiente
 			end
 		end 
 		else begin
 			countX <= countX + 1;			//Aumenta countX en 1 siempre y cuando se diferente de 800
-			countY <= countY;			//Quire decir que no ha acabado de transmitir la fila
+			countY <= countY;			//Quiere decir que no ha acabado de transmitir la fila
 		end
 	end
 end
@@ -232,7 +232,7 @@ La cámara que tenemos es un cámara OV7670 sin FIFO (First In, First Out; Prime
 
 Por lógica los pines 3.3V y GND, corresponde a la fuente que alimenta a la cámara. Según el datasheet, Reset reinicia mi cámara con cero y PWDN apaga mi cámara con 1, por lo que estas dos señales podemos elegir si incluirlas en el bloque y mantenerlas estas señales constantes o conectarlas directamente a la alimentación siendo 3.3V para tener un 1 y GND para tener un cero.
 
-SCL y SDA son los pines que me permiten configurar mi cámara a través del protocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Como podemos ver en la imagen, este protocolo inicialmente manda por SDA la dirección del dato que quiero más una señal de Lectura/Escritura y una señal de finalización de envió de dirección, y tiempo después envía mi dato más un señal de finalización de envío del dato, esta transmisión se ajusta mediante pulsos de reloj enviados en SCL.
+SCL y SDA son los pines que me permiten configurar mi cámara a través del protocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Como podemos ver en la imagen, este protocolo inicialmente manda por SDA la dirección del dato que quiero más una señal de Lectura/Escritura y una señal de finalización de envió de dirección, y tiempo después envía mi dato más una señal de finalización de envío del dato, esta transmisión se ajusta mediante pulsos de reloj enviados en SCL.
 
 ![DIAGRAMA1](/docs/figure/i2c.png)
 
@@ -246,7 +246,7 @@ Esta comunicación puede ser implementada en verilog. Pero por cuestiones de tie
 
 Pero si tener en cuenta que hay que realizar esta conexión entre la cámara y arduino (no aparece, pero toca conectar la tierra de la NexysA7, la tierra de Arduino y la tierra de la cámara al mismo punto), una vez configurados los registros podemos desconectar este montaje. Los registros que modificamos se reiniciaran si la cámara se apaga.
 
-Vsync y Hsync o Href, son las señales me sincronizan la transmisión de filas de una imagen. Como podemos ver el diagrama de tiempo, cada pulso de Vsync me indica la transmisión de una imagen y cuando Href esta me indica la transmisión de una fila de la imagen .
+Vsync y Hsync o Href, son las señales me sincronizan la transmisión de filas de una imagen. Como podemos ver el diagrama de tiempo, cada pulso de Vsync me indica la transmisión de una imagen y cuando Href esta me indica la transmisión de una fila de la imagen.
 
 ![DIAGRAMA1](/docs/figure/tem.png)
 
@@ -254,7 +254,7 @@ D[7:0] son los datos que me entrega la cámara y pclk es mi reloj de transmisió
 
 ![DIAGRAMA1](/docs/figure/444.png)
 
-En la imagen también podemos ver que, cuando le pedimos el formato RGB444 a nuestra cámara nos envía todo el componente Rojo en los cuatro bits menos significativos del primer byte del pixel y nos envía el resto en el segundo byte del pixel respectivamente, los cuatro bits mas significativos para Verde y los cuatro menos significativos para Azul.
+En la imagen también podemos ver que, cuando le pedimos el formato RGB444 a nuestra cámara nos envía todo el componente Rojo en los cuatro bits menos significativos del primer byte del pixel y nos envía el resto en el segundo byte del pixel respectivamente, los cuatro bits más significativos para Verde y los cuatro menos significativos para Azul.
 
 El ultimo pin xclk es un reloj de 24M Hz que entra en la cámara con el fin de coordinar las operaciones entre la cámara y el dispositivo al que se conectó, en nuestro caso la NexysA7.
 
@@ -284,7 +284,7 @@ module cam_read #(
 	    );
 	
 	    	input [7:0]CAM_px_data;	//Entrada de los datos byte a byte
-	    	input CAM_pclk;		//Reloj de trasnmsion de
+	    	input CAM_pclk;		//Reloj de transmision de
 		input CAM_vsync;	//Señal vsync de la camara que me indica cuando se empieza la transmision de una imagen
 		input CAM_href;		//Señal href de la camara que me indica la transmision de una fila de la iamgen
 		input rst;		//reset de la camara 
@@ -293,7 +293,7 @@ module cam_read #(
 	        output reg [AW-1:0] DP_RAM_addr_in;	// Registro de salida de la dirección de memoria de entrada 
 	        output reg [DW-1:0] DP_RAM_data_in;	// Registro de salida de la data a escribir en memoria
 ```
-Acontinuacion de claro los parametros de mi maquina de estados.
+A continuación de claro los parámetros de mi máquina de estados.
 ```verilog
 
 //Maquina de estados	
@@ -305,8 +305,8 @@ reg [1:0]status=0;						//Inicio mi maquina con el estado cero
 Ahora se procede a explicar el primer estado. El estado 0 o INIT, es un estado de espera en cual mantendrá mis direcciones, datos y registro de escritura en cero. Hasta que confirme que se empezó la transmisión de una fila, cuando esto suceda captura los datos menos significativos del byte (Rojos del pixel) que está en ese momento y pasara al tercer BYTE2 en el siguiente ciclo de pclk para capturar los datos Verde y Azul del mismo pixel y enviarlos a la memoria, y pasa al segundo estado BYTE1 en el siguiente ciclo de pclk para empezar la captura de un nuevo pixel. Este salto solo lo hace para capturar el primer pixel de la fila.
 
 ```verilog
-always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los flancos de subidas de pclk que es el punto en donde
-								//mi datos de entrada ya estan estabales
+always @(posedge CAM_pclk)begin					//Mi maquina realizara sus funciones en los flancos de subidas de pclk que es el punto en donde
+								//mis datos de entrada ya estan estables
     
     if(rst)begin						//Reinicia las direcciones cunse acciona reset
         status<=0;
@@ -349,7 +349,7 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
          end
  ```
   
-  Ahora el estado BYTE2, capturamos los datos que nos faltan del pixel, escribimos estos datos en memoria y por ultimo volvemos a BYTE1 para empezar la captura de un nuevo pixel.
+  Ahora el estado BYTE2, capturamos los datos que nos faltan del pixel, escribimos estos datos en memoria y por último volvemos a BYTE1 para empezar la captura de un nuevo pixel.
   
   ```verilog
          
@@ -359,7 +359,7 @@ always @(posedge CAM_pclk)begin					//Mi amquina realizara sus funciones en los 
              	status<=BYTE1;						//Vuelve a BYTE1 para empezar la captura de un nuevo pixel
          end
   ```
- Por último el estado NOTHING, verifica si ya se realizó la transmisión de toda la imagen, esto al verificar si se siguen transmitiendo filas (acción con lo que volverá a BYTE1) y si hay un pulso de Vsync (lo que indica que se transmitirá una nueva imagen, acción con lo que volverá a INIT). 
+ Por último, el estado NOTHING, verifica si ya se realizó la transmisión de toda la imagen, esto al verificar si se siguen transmitiendo filas (acción con lo que volverá a BYTE1) y si hay un pulso de Vsync (lo que indica que se transmitirá una nueva imagen, acción con lo que volverá a INIT). 
   ```verilog
          NOTHING:begin						// Es un estado de transición    
              if(CAM_href)begin					//Verifica si se empezo la transmision de una fila 
@@ -414,7 +414,7 @@ if((~was_init_procesamiento)|enable) begin
 	if(init_procesamiento|enable)begin
 ```
 
-Luego se colocó el anable dado que se pensaba en activar el inicio de procesamiento al finalizar de procesar, pero se concluye que esto no es del todo necesario.
+Luego se colocó el enable dado que se pensaba en activar el inicio de procesamiento al finalizar de procesar, pero se concluye que esto no es del todo necesario.
 
 * **Cargar Dato** : Carga un pixel, mediante un aumento en la dirección de memoria , que viene desde ```buffer_ram_dp```.  Su código en verilog es el siguiente:
 
@@ -429,7 +429,7 @@ Luego se colocó el anable dado que se pensaba en activar el inicio de procesami
 if(proc_data_in[11:8]>=min_R|proc_data_in[7:4]>=min_G|proc_data_in[3:0]>=min_B)
 ```
 
-* **Sel_Color** : Se separaran los colores R,G y B de cada pixel y se van sumando. Además, el registro ```ancho_actual``` se aumenta.
+* **Sel_Color** : Se separarán los colores R,G y B de cada pixel y se van sumando. Además, el registro ```ancho_actual``` se aumenta.
 
 ```verilog
 else if (Sel_Color)begin
@@ -514,7 +514,7 @@ La máquina de estados se representa en la siguiente Figura:
 
 ![DIAGRAMA1](./docs/figure/proc_maqu.png )
 
-A continuación se describe cada estado:  
+A continuación, se describe cada estado:  
 
 * **INIT**: Se encarga de inicializar el procesamiento. 
 
@@ -674,7 +674,7 @@ color=2, verde
 color=3, Azul
 ```
 
-* La figura no la identificó, ya que en python se generó un círculo pero registró un cuadrado. En general:
+* La figura no la identificó, ya que en python se generó un círculo, pero registró un cuadrado. En general:
 
 ```verilog
 figure=1, Triángulo
@@ -717,7 +717,7 @@ module camara #(
 		input  [7:0]CAM_px_data,	//Datos de la camara
 		
 	// Mapa de memoria
-		// Escitura
+		// Escritura
 		input init_procesamiento,
 		
 		//Lectura
@@ -727,25 +727,25 @@ module camara #(
     
 		   );
 ```
-Las señales que están bajo el tag de Mapa de Memoria son las señales que queremos conectar a nuestros bus de datos. A continuación procedemos a parámetros que usara nuestro bloque y los cables con los cuales interconectaremos las instancia de cada uno de los bloques.
+Las señales que están bajo el tag de Mapa de Memoria son las señales que queremos conectar a nuestros bus de datos. A continuación, procedemos a parámetros que usara nuestro bloque y los cables con los cuales interconectaremos las instancia de cada uno de los bloques.
 
 ```verilog
 // TAMANO DE ADQUISICION DE LA CAMARA
 
-	// Tamaño de la imagne QQVGA
+	// Tamaño de la imagen QQVGA
 	parameter CAM_SCREEN_X = 160; 		// 640 / 4. Elegido por preferencia, menos memoria usada.
 	parameter CAM_SCREEN_Y = 120;    	// 480 / 4.
-	localparam DW=12; // Se determina de acuerdo al tamaño de la data, formaro RGB444 = 12 bites.
+	localparam DW=12; // Se determina de acuerdo al tamaño de la data, formato RGB444 = 12 bites.
 
-	// coneciondes de los relojes
+	// conexiones de los relojes
 	wire clk100M;           // Reloj de un puerto de la Nexys 4 DDR entrada.
 	wire clk25M;		// Para guardar el dato del reloj de la Pantalla (VGA 680X240 y DP_RAM).
 	wire clk24M;		// Para guardar el dato del reloj de la camara.
 
-	// Coneccion dual por ram
-	localparam imaSiz= CAM_SCREEN_X*CAM_SCREEN_Y; // Posición n+1 del tamañp del arreglo de pixeles de acuerdo al formato.
+	// Conexion dual por ram
+	localparam imaSiz= CAM_SCREEN_X*CAM_SCREEN_Y; // Posición n+1 del tamaño del arreglo de pixeles de acuerdo al formato.
 	wire [AW-1: 0] DP_RAM_addr_in;		// Conección  Direccion entrada.
-	wire [DW-1: 0] DP_RAM_data_in;      	// Coneccion Dato entrada.
+	wire [DW-1: 0] DP_RAM_data_in;      	// Conexion Dato entrada.
 	wire DP_RAM_regW;			// Enable escritura de dato en memoria .
 	reg  [AW-1: 0] DP_RAM_addr_out;		//Registro de la dirección de memoria. 
 
@@ -899,11 +899,11 @@ endmodule
 
 ## Radar
 
-Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
+Para el radar se utilizan dos dispositivos un servo motor(SG90) y un ultrasonido( HC - SR04 )  el objetivo es usar el servo motor con tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software se usará esa información para la navegación.
 
 ![DIAGRAMA1](/docs/figure/motoryultra.png )
 
-Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultrasonido.v
+Se usará un top radar en donde se llamará los   módulos servo.v   y al ultrasonido.v
 
 ```verilog
 `timescale 10ns/1ns
@@ -927,7 +927,7 @@ Se usara un top radar en donde se llamara los   módulos  servo.v   y al ultraso
  
 ### El módulo servo.v 
  
-Este   dispositivo funciona con tres diferentes pulsos (PWM) a una velocidad definida por el DATA SHEET(1ms  para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados  por un espacio 20ms
+Este   dispositivo funciona con tres diferentes pulsos (PWM) a una velocidad definida por el DATA SHEET(1ms para 0 grados ) ( 1.5ms para 90 grados )  y (2ms para 180 grados) separados por un espacio 20ms
 
 ![DIAGRAMA1](/docs/figure/pwm.png)
 
@@ -972,7 +972,7 @@ if(boton_cambiar_grados==2)
 	end
 
  ```
- Salida tomada con el osciloscopio  digital  
+ Salida tomada con el osciloscopio digital  
 ![DIAGRAMA1](/docs/figure/prueba1.5.png)
 
  
@@ -981,7 +981,7 @@ if(boton_cambiar_grados==2)
 
 
  ```verilog
-El  divisor 2ms 
+El divisor 2ms 
 	else if(boton_cambiar_grados==3)
 		begin
 				contador<= contador +1;                      
@@ -1021,7 +1021,7 @@ Salida tomada con el osciloscopio
 
 ![DIAGRAMA1](/docs/figure/prueva2ms.png )
 
-## El  funcionamiento del ultrasonido
+## El funcionamiento del ultrasonido
 
 (1)	Usando disparador (trigger) se crean pulso de al menos 10us de señal de alto nivel
 (2)	El Módulo envía automáticamente ocho a 40 kHz y detecta si hay una señal de pulso de vuelta.  
@@ -1082,7 +1082,7 @@ Para el  echo que es la señal de entrada
  
 ## Motor paso a paso
 Los motores paso a paso serán utilizados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma dirección permiten el desplazamiento hacia delante o hacia atrás, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
-A continuación se muestran las entradas y salidas del módulo: 
+A continuación, se muestran las entradas y salidas del módulo: 
 
 ```verilog
 `timescale 1ns/1ps
@@ -1125,7 +1125,7 @@ Posteriormente se definen algunos parámetros y algunos contadores:
 ```
 
 
-Los parametros **divH** y **divL** se utilizan como tope para el correspondiente contador **countF**, en resumen: *En cada periodo del **clk** se aumenta en 1 el **countF**, cuando el **countF** es igual al valor de **divH** el **trigger** realiza un flanco de subida y cuando **countF** es igual al valor de **divL** entonces el trigger realiza un flanco de bajada, en este último paso el **countF** se reinicia a 0*; asi que el **trigger** es ahora nuestro nuevo reloj; este divisor de frecuencia es necesario debido a que los motores y driver de nuestra referencia ([2byj-48][uln2003]) no funcionan a una frecuencia tan alta (100MHz). En este paso convertimos 100MHz en 1KHz. La fórmula es:
+Los parámetros **divH** y **divL** se utilizan como tope para el correspondiente contador **countF**, en resumen: *En cada periodo del **clk** se aumenta en 1 el **countF**, cuando el **countF** es igual al valor de **divH** el **trigger** realiza un flanco de subida y cuando **countF** es igual al valor de **divL** entonces el trigger realiza un flanco de bajada, en este último paso el **countF** se reinicia a 0*; así que el **trigger** es ahora nuestro nuevo reloj; este divisor de frecuencia es necesario debido a que los motores y driver de nuestra referencia ([2byj-48][uln2003]) no funcionan a una frecuencia tan alta (100MHz). En este paso convertimos 100MHz en 1KHz. La fórmula es:
 [![N|Solid](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)](https://i.ibb.co/9r6H2By/imagen-2020-12-16-175106.png)
 
 
@@ -1156,7 +1156,7 @@ always @(posedge clk) begin
 		end
 end
 ```
-Se hace uso del **trigger** como reloj para cada paso de los motores. Como ya se menciono cada motor esta condicionado por **direccion** o **direccion2** y ellos son independientes del otro.  
+Se hace uso del **trigger** como reloj para cada paso de los motores. Como ya se mencionó cada motor está condicionado por **direccion** o **direccion2** y ellos son independientes del otro.  
 Cada motor tiene su propio contador, ya sea **cuen** o **cuen1**, los cuales se encargan de pasar de un paso a otro (desde el 1 al 8), en cada paso se energizan o se apagan las bobinas correspondientes, tal que se siga la secuencia que indican en el siguiente [LINK](http://robots-argentina.com.ar/MotorPP_basico.htm) o en la imagen:
 
 [![N|Solid](http://robots-argentina.com.ar/img/MotorPP_unipolar_tablaht.gif)](http://robots-argentina.com.ar/img/MotorPP_unipolar_tablaht.gif)
@@ -1252,7 +1252,7 @@ El primer paso es declarar cada módulo definido anteriormente como una clase en
 
 ![DIAGRAMA1](/docs/figure/Capturamotorpy.jpeg)
 
-Ahora dentro de "module".py, definimos que pines del módulo se conectaran al Bus y cuales saldrán del SoC a mis periféricos, que pines son de entrada y salida, y sobre todo indicar de los pines conectados al bus cuales son registros de lectura y escritura. Esta última acción nos establece como quedara nuestro mapa de memoria.
+Ahora dentro de "module".py, definimos que pines del módulo se conectarán al Bus y cuales saldrán del SoC a mis periféricos, que pines son de entrada y salida, y sobre todo indicar de los pines conectados al bus cuales son registros de lectura y escritura. Esta última acción nos establece como quedara nuestro mapa de memoria.
 
 ![DIAGRAMA1](/docs/figure/modulomotorpy.jpeg)
 
@@ -1299,7 +1299,7 @@ if __name__ == "__main__":
 
 
 ```
-Ahora, creamos un nuevo archivo de Python en el cual declaramos los pines que no estan conectados al Bus Wishbone, en este declaramos:
+Ahora, creamos un nuevo archivo de Python en el cual declaramos los pines que no están conectados al Bus Wishbone, en este declaramos:
 ```python
 from litex.build.generic_platform import *			#La Plataforma (Vivado o Quartus) que se quiere usar,
 from litex.build.xilinx import XilinxPlatform, VivadoProgrammer #esto segun la FPGA que se quiere usar
@@ -1333,11 +1333,11 @@ class Platform(XilinxPlatform):
         XilinxPlatform.do_finalize(self, fragment)
 
 ```
-Una vez listos estos archivos, abrimos un terminal en la ubicación de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezara la creación del HardWare de nustro SoC según los parámetros y especificaciones ingresadas en los anteriores archivos.
+Una vez listos estos archivos, abrimos un terminal en la ubicación de buildSoCproject.py y ejecutamos 'phyton3 buildSoCproject.py', esto empezara la creación del HardWare de nuestro SoC según los parámetros y especificaciones ingresadas en los anteriores archivos.
 
 ![DIAGRAMA1](/docs/figure/UNO.jpeg)
 
-Una vez creado el HardWare de nuestro SoC, procedemos a crear nuestro SoftWare. Para esto primero tenemos que crear librerías para nuestros módulos, esto podemos hacerlo al copiar cualquier librería y usarla como plantilla (las librerías se distingue por se archivos .h).
+Una vez creado el HardWare de nuestro SoC, procedemos a crear nuestro SoftWare. Para esto primero tenemos que crear librerías para nuestros módulos, esto podemos hacerlo al copiar cualquier librería y usarla como plantilla (las librerías se distinguen por se archivos .h).
 
 ![DIAGRAMA1](/docs/figure/CapturamotorH.jpeg)
 
@@ -1422,11 +1422,11 @@ static void motor_test(void)			#Esta funcion prueba el movimiento de los motores
 	
 }
 ```
-Ahora, en la ubicacion de main.c, abrimos una terminal y ejecutamos los siguientes comandos 'make clean' y 'make all'. 'make clean', elimina todos los archivos menos los .c y .h, y 'make all' me construye el firmware (soporte lógico inalterable, SoftWare en su nivel mas bajo).
+Ahora, en la ubicacion de main.c, abrimos una terminal y ejecutamos los siguientes comandos 'make clean' y 'make all'. 'make clean', elimina todos los archivos menos los .c y .h, y 'make all' me construye el firmware (soporte lógico inalterable, SoftWare en su nivel más bajo).
 
 ![DIAGRAMA1](/docs/figure/CUATRO.jpeg)
 
-Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nuestro caso que usamos la NexysA7, priemro verificamos que nuestro equipo reconociera la tarjeta al ejecutar el comando 'djtgcfg enum', este comando identifica si nuestro equipo esta reconociendo o no la tarjet, y para aseguaranos de que no ocurran errores con el puerto USB ejecutamos 'sudo chmod 666 /dev/ttyUSB1' el cual nos da libre acceso a este puerto.
+Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nuestro caso que usamos la NexysA7, primero verificamos que nuestro equipo reconociera la tarjeta al ejecutar el comando 'djtgcfg enum', este comando identifica si nuestro equipo está reconociendo o no la tarjet, y para asegurarnos de que no ocurran errores con el puerto USB ejecutamos 'sudo chmod 666 /dev/ttyUSB1' el cual nos da libre acceso a este puerto.
 
 ![DIAGRAMA1](/docs/figure/DOS.jpeg)
 
@@ -1436,7 +1436,7 @@ Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, p
 
 ## Montaje
 
-A continuación presentamos el montaje de nuestro 'Robot':
+A continuación, presentamos el montaje de nuestro 'Robot':
 
 
 ![DIAGRAMA1](/docs/figure/RobotMasJose1.jpeg)
@@ -1526,7 +1526,7 @@ static void radar_test(void)
 	radar_cntrl_boton_cambiar_grados_write(3);   /* cambia el servo a 180 grados  */
 	delay_ms(500);
 
-	radar_cntrl_ultra_write(1);                /* enciende  el ultrazonido  */
+	radar_cntrl_ultra_write(1);                /* enciende  el ultrasonido  */
 	delay_ms(5000);	
 	radar_cntrl_ultra_write(0);
 
