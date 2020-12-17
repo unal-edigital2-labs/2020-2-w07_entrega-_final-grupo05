@@ -230,7 +230,9 @@ La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero
 * Reset  | Reset
 * PWDN   | Power Down Mode Selection
 
-Por logica los pines 3.3V y GND, corresponde a la fuente que alimenta a la camara.
+Por logica los pines 3.3V y GND, corresponde a la fuente que alimenta a la camara. Segun el datasheet, Reset reinicia mi camara con cero y PWDN apaga mi camara con 1, por lo que estas dos señales podemos elegir si incluirlas en el bloque y mantenarlas esta señales constantes o conectarlas directamente a la alimentacion siendo 3.3V para tener un 1 y GND para tener un cero.
+
+SCL y SDA son los pines que me permiten configuar mi camara atraves del portocolo I2C (Inter-Integrated Circuit, Circuito inter-integrado). Es posble realizar esta comunicacion con un bloque creado en verilog.
 
 
 ### procesamiento.v 
