@@ -15,18 +15,18 @@ Durante la primeras semanas, con ayuda del profesor y otros grupos de la misma m
 
 Por cuestiones de tiempo y logsitica se trabajaron e implementaron los siguientes dispositivos:
 
-* >Camara (Procesamiento y VGA)
-* >Radar (Ultrasonido y Servomotor)
-* >Motores Pasa a Paso
-* >Infrarojo
+* Camara (Procesamiento y VGA)
+* Radar (Ultrasonido y Servomotor)
+* Motores Pasa a Paso
+* Infrarojo
 
 Ahora procedemos a explicar cada uno.
 
 ### Camara
 La camara usada fue la OV7670, sus caracteristicas principales son:
 
-* >Es una camara de video
-* >No posee memoria de almacenamiento 
-* >La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
+* Es una camara de video
+* No posee memoria de almacenamiento 
+* La imagen se puede ajustar atraves de una serie de registros internos que se comunican mediante el protocolo I2C (del inglés Inter-Integrated Circuit)
 
 El driver camara esta compuesto
