@@ -149,3 +149,7 @@ if(boton_cambiar_grados==2)
 	end
 
  ```
+ ![DIAGRAMA1](/docs/figure/pueva.png )
+
+ 
+ 
