@@ -192,7 +192,7 @@ if(boton_cambiar_grados==1)
 				end
 	end   
  ```
- 
+ Salida tomada con el osciloscopio  digital  
  ![DIAGRAMA1](/docs/figure/prueba1.png)
 
 El  divisor 1,5ms 
@@ -215,7 +215,7 @@ if(boton_cambiar_grados==2)
 	end
 
  ```
- 
+ Salida tomada con el osciloscopio  digital  
 ![DIAGRAMA1](/docs/figure/prueba1.5.png)
 
  
