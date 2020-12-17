@@ -153,17 +153,30 @@ Como podemos ver en la imagen, el puerto VGA de la nexysA7 esta diseñado para l
 Ahora, procedemos a explicar el codigo:
 ```verilog
 module VGA_Driver #(DW = 12) (
-	input rst,
-	input clk, 						// 25MHz  para 60 hz de 640x480
+	input rst,			//Reset
+	input clk, 			// 25MHz  para 60 hz de 640x480
 	input  [DW - 1 : 0] pixelIn, 	// entrada del valor de color  pixel 
 	
-	output  [DW - 1 : 0] pixelOut, // salida del valor pixel a la VGA 
+	output  [DW - 1 : 0] pixelOut, 	// salida del valor pixel a la VGA 
 	output  Hsync_n,		// señal de sincronización en horizontal negada
 	output  Vsync_n,		// señal de sincronización en vertical negada 
-	output  [9:0] posX, 	// posicion en horizontal del pixel siguiente
+	output  [9:0] posX, 		// posicion en horizontal del pixel siguiente
 	output  [9:0] posY 		// posicion en vertical  del pixel siguiente
 );
+localparam SCREEN_X = 640; 	// tamaño de la pantalla visible en horizontal 
+localparam FRONT_PORCH_X =16;  
+localparam SYNC_PULSE_X = 96;
+localparam BACK_PORCH_X = 48;
+localparam TOTAL_SCREEN_X = SCREEN_X+FRONT_PORCH_X+SYNC_PULSE_X+BACK_PORCH_X; 	// total pixel pantalla en horizontal 
+
+
+localparam SCREEN_Y = 480; 	// tamaño de la pantalla visible en Vertical 
+localparam FRONT_PORCH_Y =10;  
+localparam SYNC_PULSE_Y = 2;
+localparam BACK_PORCH_Y = 33;
+localparam TOTAL_SCREEN_Y = SCREEN_Y+FRONT_PORCH_Y+SYNC_PULSE_Y+BACK_PORCH_Y; 	// total pixel pantalla en Vertical 
 ```
+
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
