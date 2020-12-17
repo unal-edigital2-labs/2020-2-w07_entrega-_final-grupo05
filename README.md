@@ -212,7 +212,32 @@ end
 ```
 ### cam_read.v
 
-Este es modulo encargado de recolectar y enviar los datos de la camara OV7670 a nuestra memoria. Para diseñar este modulo, primero tenemos que saber que transmite la camara.
+Este es modulo encargado de recolectar y enviar los datos de la camara OV7670 a nuestra memoria. Para diseñar este modulo, primero tenemos que saber que tseñales genera y cuales necesita mi camara.
+
+![DIAGRAMA1](/docs/figure/camara.jpeg)
+
+La camara que tenemos es un camara OV7670 sin FIFO (First In, First Out; Primero en entrar, primero en salir) que posee 18 pines. Los cuales son:
+
+* 3.3V   | Alimentacion
+* GND    | Tierra
+* SCL    | SCCB serial interface clock input
+* SDA    | SCCB serial interface data I/O
+* VSync  | Vertical Sync Output
+* HSync  | Horizontal Sync Output
+* pclk   | Pixel clock output
+* xclk   | System clock input 
+* D[7:0] | YUV/RGB video component output
+* Reset  | Reset
+* PWDN   | Power Down Mode Selection
+
+Por logica los pines 3.3V y GND, corresponde a la fuente que alimenta a la camara.
+
+
+### procesamiento.v 
+
+
+
+### camara.v 
 
 ## Radar
 
