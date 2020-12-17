@@ -667,10 +667,14 @@ Ahora, en la ubicacion de main.c, abrimos una terminal y ejecutamos los siguient
 
 ![DIAGRAMA1](/docs/figure/CUATRO.jpeg)
 
-Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nuestro caso que usamos la NexysA7, priemro verificamos que nuestro equipo reconociera la tarjeta al ejecutar el comando 'djtgcfg enum', este comando identifica si nuestro equipo esta reconociendo o no la tarjet, y para aseguaranos de que no ocurran errores con el puerto USB ejecutamos 'sudo chmod 666 /dev/ttyUSB1' el cual nos da libre acceso a aeste puerto.
+Ahora, procedemos a programar nuestra FPGA con el HardWare de nuestro SoC. En nuestro caso que usamos la NexysA7, priemro verificamos que nuestro equipo reconociera la tarjeta al ejecutar el comando 'djtgcfg enum', este comando identifica si nuestro equipo esta reconociendo o no la tarjet, y para aseguaranos de que no ocurran errores con el puerto USB ejecutamos 'sudo chmod 666 /dev/ttyUSB1' el cual nos da libre acceso a este puerto.
 
 ![DIAGRAMA1](/docs/figure/DOS.jpeg)
 
 Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, para esto abrimos una terminal y ejecutamos 'sudo litex_term /dev/ttyUSB1 --kernel "ubicacion del firmware"' y en nuestra FPGA presionamos el boton CPU_RESET. Al presionar este boton, reiniciamos la BIOS (Basic Input/Output System, Sistema Básico de Entrada y Salida) de la tarjeta permitiendonos cargar nuestro firmware.
 
 ![DIAGRAMA1](/docs/figure/TRES.jpeg)
+
+## Montaje
+
+A continuacion presentamos el montaje de nuestro 'Robot':
