@@ -151,6 +151,19 @@ Por defecto, la nexysA7 hace uso de la coneccion que se ve en la figura, lo que 
 Como podemos ver en la imagen, el puerto VGA de la nexysA7 esta diseñado para la transmision de datos en formato no superior a RGB444. Esta es una de la principales razones por la que se eligio este formato para la imagen. 
 
 Ahora, procedemos a explicar el codigo:
+```verilog
+module VGA_Driver #(DW = 12) (
+	input rst,
+	input clk, 						// 25MHz  para 60 hz de 640x480
+	input  [DW - 1 : 0] pixelIn, 	// entrada del valor de color  pixel 
+	
+	output  [DW - 1 : 0] pixelOut, // salida del valor pixel a la VGA 
+	output  Hsync_n,		// señal de sincronización en horizontal negada
+	output  Vsync_n,		// señal de sincronización en vertical negada 
+	output  [9:0] posX, 	// posicion en horizontal del pixel siguiente
+	output  [9:0] posY 		// posicion en vertical  del pixel siguiente
+);
+```
 ## Radar
 
 Para el radar se utilizan dos dispositivos un servo motor(SG90)  y un ultrasonido( HC - SR04 )  el objetivo es usar el  servo motor con  tres grados de libertad( 0   ,90 gradas y 180 grados) para tomar la  distancia con el ultrasonido ( al frente, izquierda y derecha )   luego en software  se usara esa información  para la navegación.
