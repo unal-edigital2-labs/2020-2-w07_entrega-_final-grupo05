@@ -1384,6 +1384,25 @@ end
 |rw|motor_cntrl_direccion|0x82005800|
 |rw|motor_cntrl_direccion2|0x82005804|
 
+
+## Infra
+
+Por ultimo se vincularon 3 sensores infrarojos, como el que se ve acontinuacion.
+
+![DIAGRAMA1](/docs/figure/infrad.png)
+
+El funcionamiento de este es muy simple. Tengo un emisor y un receptor, el emisor es un LED infrarojo que emitie una onda infrarojo y el receptor es un fotodiodo.
+
+![DIAGRAMA1](/docs/figure/infra.png)
+
+
+## Mapa de memoria infrarrojo
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|ro|infra_cntrl_salida|0x82006000|
+|ro|infra_cntrl_salida1|0x82006004|
+|ro|infra_cntrl_salida2|0x82006008|
+
 ## Implementación 
 
 Con la ayuda de Litex y Vivado, unificamos los módulos anteriormente descritos mediante un Bus Wishbone a un procesador (en este caso el procesador PicoRV32).
@@ -1574,6 +1593,10 @@ Una vez programada nuestra FPGA, procedemos a cargar el firmware a la tarjeta, p
 
 ![DIAGRAMA1](/docs/figure/TRES.jpeg)
 
+
+
+
+
 ## Montaje
 
 A continuación, presentamos el montaje de nuestro 'Robot':
@@ -1732,9 +1755,3 @@ delay_ms(1000);
 |---|---|
 |Prueba de Infrarojo|[Infrarojo](https://drive.google.com/file/d/1DQqk4RR1XBrkegurBqN803MIiDWS0Xt8/view?usp=sharing)|
 
-## Mapa de memoria infrarrojo
-|Tipo|Nombre|Dirección|
-|--|--|--|
-|ro|infra_cntrl_salida|0x82006000|
-|ro|infra_cntrl_salida1|0x82006004|
-|ro|infra_cntrl_salida2|0x82006008|
