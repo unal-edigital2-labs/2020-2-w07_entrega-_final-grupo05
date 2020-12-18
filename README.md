@@ -19,6 +19,9 @@ Por cuestiones de tiempo y logística se trabajaron e implementaron los siguient
 * Radar (Ultrasonido y Servomotor)
 * Motores Pasa a Paso
 * Infrarrojo
+Por tanto, nuestro SoC quedó de la siguiente manera:
+
+![DIAGRAMA1](/docs/figure/SoCFinal.png)
 
 Ahora procedemos a explicar cada uno.
 
