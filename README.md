@@ -1036,6 +1036,16 @@ La última parte, está diseñada para completar los datos faltantes en la trans
 
 endmodule
 ```
+## Mapa de la cámara
+
+
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|ro|camara_cntrl_color|0x82004800|
+|ro|camara_cntrl_figure|0x82004804|
+|ro|camara_cntrl_done|0x82004808|
+|rw|camara_cntrl_init_procesamiento|0x8200480c|
+
 
 ## Radar
 
