@@ -682,9 +682,149 @@ figure=2, Círculo
 figure=3, Cuadrado
 ```
 
+#### Esquemático
 
- 
+Después de la síntesis, en Vivado se puede obtener el diagrama estructural este se muestra a continuación:
+
+![DIAGRAMA1](./docs/figure/procesamiento_esquematico.png)
+
 #### Errores corregidos
+
+##### Error multi-driven
+
+Al aparecer los errores que se muestran a continuación no coincidian los resultados de la simulación llamada en Vivado como *Behavioral simulation* con la *Post-synthesis Simulation* dado que ni siquiera el done que indica en término del procesamiento está activado.
+
+
+![DIAGRAMA1](./docs/figure/error2.png)
+
+*Errores críticos*
+
+![DIAGRAMA1](./docs/figure/error3.png)
+
+*Simulación a nivel de compuestas lógicas o Post-synthesis Simulation*
+
+A partir de Xilinx Forums [1], se comprendió que **los registros se deben modificar o actualizar en un solo un bloque de always**. Entonces, los resgistros que están en un recuadro rojo de la siguiente figura, se ubicaron en el bloque always que los modificaba.
+
+![DIAGRAMA1](./docs/figure/error4.png)
+
+*Identificación de los registros que se modificaban en otro bloque always*
+
+![DIAGRAMA1](./docs/figure/error5.png)
+
+*Corrección realizada* 
+Al simular nuevamente a nivel de compuestas lógicas se obtiene la siguiente Figura:
+
+
+##### Error de asignación en alta impedancia.
+
+Este error fue que no se le asignó un valor a los registros que aparecen enmarcados en rojos durante la asignación la evaluación de los casos o en otras palabra no se tomó en cuenta un caso por defecto. Esto no se notaba en ninguna de las simulaciones porque fila válida siempre era mayor a uno y el color era alguno referente a RGB. El profesor nos recordó que estábamos programando en HardWare y que por lo tanto no se le asignaba un valor al multiplexor representado por los condicionales, cuando ninguno de los casos se presentaba.
+
+![DIAGRAMA1](./docs/figure/error7.png)
+
+##### Error de indentificación de círcilo
+
+Mediante el script de python que sigue a continuación se realizó un círculo y se guardó en circulo.men, Teniendo en cuenta que se borra el último salto de línea. 
+
+```python
+m=160 
+n=120
+i=0
+archivo = open("<Address>", "w")
+ 
+for i in range(1,n+1):
+    for j in range(1,m+1):
+        if((i-n/2)**2+(j-m/2)**2<=(n/2-1)**2):
+            archivo.write("f00\n")
+        else: archivo.write("000\n")
+
+archivo.close()
+```
+
+Simulando los resultados en [vga-simulator](https://ericeastwood.com/lab/vga-simulator/) se tiene la siguiente Figura:
+
+![DIAGRAMA1](./docs/figure/circulo.png)
+
+
+Sin embargo, al procesarlo se tiene un cuadrado(figure=3).
+
+![DIAGRAMA1](./docs/figure/error_color.png)
+
+Revisando más detalladamente, se encuentra que más o menos en la mitad del círculo algunas filas tienen los mismos píxeles válidos. 
+
+![DIAGRAMA1](./docs/figure/error_color2.png)
+
+Según simulaciones, el ancho mayor es de 35 y las filas válidas son de 117, equivaliendo a un 30\% en el cual no está dentro del rango de captura del círculo esto lleva a recalcular los límites para que sea cosiderada la figura como un círculo. 
+
+![DIAGRAMA1](./docs/figure/error_color3.png)
+
+|Figura|Consideración anterior|Nueva consideración|
+|--|--|--|--|
+|Triángulo|fila_valida*[0.75,1] | fila_valida*[0.5,1] |
+|Círculo|fila_valida*[0.37,0.62] |fila_valida*[0.25,0.5] |
+|Cuadrado|fila_valida>0 | fila_valida>0 |
+
+Para lograr estos límites se hacen los siguientes corrimientos:
+
+Para el triángulo:
+
+```verilog
+if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida>>1)) figure<=1;
+```
+
+Para el Círculo:
+
+```verilog
+else if((fila_valida>>1)>=ancho_mayor&ancho_mayor>(fila_valida>>2)) figure<=2;
+```
+Para el cuadrado
+```verilog
+else if(fila_valida>0) figure<=3;
+```
+
+
+Además, se puede hacer que el procedimiento se haga cada tres filas. Estos se hace en el estado `Add_Anc_May` y así queda:
+
+```verilog
+ 
+        else if (Add_Anc_May)begin
+        fil<=fil+3;
+        proc_addr_in<=proc_addr_in+3*m;
+        col<=0;
+            if(ancho_actual>min_ancho_actual)begin 
+                
+                fila_valida<=fila_valida+1;
+                if(ancho_anterior<ancho_actual)ancho_mayor<=ancho_mayor+1;
+            
+            end
+        ancho_anterior<=ancho_actual;
+        ancho_actual<=0;       
+        end
+```
+
+Finalmente, se implementa y los resultados son positivos en la identificación de la forma de la figura, pero en la simulación se muestra que las direcciones se desbordan.
+
+
+![DIAGRAMA1](./docs/figure/error_color4.png)
+
+Entonces, se corrige un error en el aumento de las direcciones y el resultado se refleja en la siguiente Figura:
+
+![DIAGRAMA1](./docs/figure/error_color5.png)
+
+La parte corregida fué:
+
+```verilog
+proc_addr_in<=proc_addr_in+2*m;
+```
+Solo se debe multiplicar por 2, ya que se encuentra en la etapa justo antes de terminar la fila. Además, el error del dato en la máxima dirección, se puede arreglar en el módulo `buffer_ram_dp.v`, colocando en dicha dirección un valor.
+
+
+![DIAGRAMA1](./docs/figure/error_color7.png)
+
+Finalmente se obtiene el resultado deseado según la próxima Figura. El color es rojo (color=1), la Figura es un círculo (figure=2) y la relación ente `ancho_mayor`/`fila_valida` es de 16/39 es decir de un 41\%.
+
+
+![DIAGRAMA1](./docs/figure/error_color8.png)
+
 
 ### camara.v 
 

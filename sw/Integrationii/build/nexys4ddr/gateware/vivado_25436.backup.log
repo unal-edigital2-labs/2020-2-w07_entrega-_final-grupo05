@@ -1,0 +1,217 @@
+#-----------------------------------------------------------
+# Vivado v2019.2 (64-bit)
+# SW Build 2708876 on Wed Nov  6 21:39:14 MST 2019
+# IP Build 2700528 on Thu Nov  7 00:09:20 MST 2019
+# Start of session at: Wed Dec 16 14:44:48 2020
+# Process ID: 25436
+# Current directory: /home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware
+# Command line: vivado -mode batch -source nexys4ddr.tcl
+# Log file: /home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/vivado.log
+# Journal file: /home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/vivado.jou
+#-----------------------------------------------------------
+source nexys4ddr.tcl
+# create_project -force -name nexys4ddr -part xc7a100t-CSG324-1
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:06 . Memory (MB): peak = 1499.176 ; gain = 8.023 ; free physical = 264 ; free virtual = 5427
+# set_msg_config -id {Common 17-55} -new_severity {Warning}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/buffer_ram_dp.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/cam_read.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/procesamiento.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/VGA_driver.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_0.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_clk_wiz.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/radar.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/servo.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/ultrasonido1.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infra.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infrarojo.v}
+# read_verilog {/opt/litex/pythondata-cpu-picorv32/pythondata_cpu_picorv32/verilog/picorv32.v}
+# read_verilog {/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v}
+# read_xdc nexys4ddr.xdc
+# set_property PROCESSING_ORDER EARLY [get_files nexys4ddr.xdc]
+# synth_design -directive default -top nexys4ddr -part xc7a100t-CSG324-1
+Command: synth_design -directive default -top nexys4ddr -part xc7a100t-CSG324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+INFO: Launching helper process for spawning children vivado processes
+INFO: Helper process launched with PID 25533 
+WARNING: [Synth 8-2507] parameter declaration becomes local in camara with formal parameter declaration list [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v:61]
+WARNING: [Synth 8-2507] parameter declaration becomes local in camara with formal parameter declaration list [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v:62]
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:12 . Memory (MB): peak = 1969.746 ; gain = 204.688 ; free physical = 204 ; free virtual = 4891
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'nexys4ddr' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:4]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:732]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:732]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:733]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:733]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:734]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:734]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:735]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:735]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:737]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:737]
+INFO: [Synth 8-5534] Detected attribute (* dont_touch = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:738]
+INFO: [Synth 8-5534] Detected attribute (* async_reg = "true" *) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:738]
+INFO: [Synth 8-3876] $readmem data file 'mem.init' is read successfully [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:2047]
+INFO: [Synth 8-3876] $readmem data file 'mem_1.init' is read successfully [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:2067]
+INFO: [Synth 8-3876] $readmem data file 'mem_2.init' is read successfully [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:2087]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1597]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1606]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1648]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1732]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1749]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1780]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1803]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:1909]
+INFO: [Synth 8-6157] synthesizing module 'camara' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v:21]
+	Parameter AW bound to: 15 - type: integer 
+	Parameter CAM_SCREEN_X bound to: 160 - type: integer 
+	Parameter CAM_SCREEN_Y bound to: 120 - type: integer 
+	Parameter DW bound to: 12 - type: integer 
+	Parameter imaSiz bound to: 19200 - type: integer 
+INFO: [Synth 8-6157] synthesizing module 'clk24_25_nexys4' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4.v:71]
+INFO: [Synth 8-6157] synthesizing module 'clk24_25_nexys4_clk_wiz' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_clk_wiz.v:69]
+INFO: [Synth 8-6157] synthesizing module 'BUFG' [/tools/Xilinx/Vivado/2019.2/scripts/rt/data/unisim_comp.v:1075]
+INFO: [Synth 8-6155] done synthesizing module 'BUFG' (1#1) [/tools/Xilinx/Vivado/2019.2/scripts/rt/data/unisim_comp.v:1075]
+INFO: [Synth 8-6157] synthesizing module 'MMCME2_ADV' [/tools/Xilinx/Vivado/2019.2/scripts/rt/data/unisim_comp.v:39940]
+	Parameter BANDWIDTH bound to: OPTIMIZED - type: string 
+	Parameter CLKFBOUT_MULT_F bound to: 9.750000 - type: double 
+	Parameter CLKFBOUT_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKFBOUT_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKIN1_PERIOD bound to: 10.000000 - type: double 
+	Parameter CLKIN2_PERIOD bound to: 0.000000 - type: double 
+	Parameter CLKOUT0_DIVIDE_F bound to: 40.625000 - type: double 
+	Parameter CLKOUT0_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT0_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT0_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT1_DIVIDE bound to: 39 - type: integer 
+	Parameter CLKOUT1_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT1_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT1_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT2_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT2_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT2_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT2_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT3_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT3_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT3_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT3_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT4_CASCADE bound to: FALSE - type: string 
+	Parameter CLKOUT4_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT4_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT4_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT4_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT5_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT5_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT5_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT5_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter CLKOUT6_DIVIDE bound to: 1 - type: integer 
+	Parameter CLKOUT6_DUTY_CYCLE bound to: 0.500000 - type: double 
+	Parameter CLKOUT6_PHASE bound to: 0.000000 - type: double 
+	Parameter CLKOUT6_USE_FINE_PS bound to: FALSE - type: string 
+	Parameter COMPENSATION bound to: ZHOLD - type: string 
+	Parameter DIVCLK_DIVIDE bound to: 1 - type: integer 
+	Parameter IS_CLKINSEL_INVERTED bound to: 1'b0 
+	Parameter IS_PSEN_INVERTED bound to: 1'b0 
+	Parameter IS_PSINCDEC_INVERTED bound to: 1'b0 
+	Parameter IS_PWRDWN_INVERTED bound to: 1'b0 
+	Parameter IS_RST_INVERTED bound to: 1'b0 
+	Parameter REF_JITTER1 bound to: 0.010000 - type: double 
+	Parameter REF_JITTER2 bound to: 0.010000 - type: double 
+	Parameter SS_EN bound to: FALSE - type: string 
+	Parameter SS_MODE bound to: CENTER_HIGH - type: string 
+	Parameter SS_MOD_PERIOD bound to: 10000 - type: integer 
+	Parameter STARTUP_WAIT bound to: FALSE - type: string 
+INFO: [Synth 8-6155] done synthesizing module 'MMCME2_ADV' (2#1) [/tools/Xilinx/Vivado/2019.2/scripts/rt/data/unisim_comp.v:39940]
+INFO: [Synth 8-6155] done synthesizing module 'clk24_25_nexys4_clk_wiz' (3#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_clk_wiz.v:69]
+INFO: [Synth 8-6155] done synthesizing module 'clk24_25_nexys4' (4#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4.v:71]
+WARNING: [Synth 8-7023] instance 'clk25_24' of module 'clk24_25_nexys4' has 5 connections declared, but only 4 given [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v:111]
+INFO: [Synth 8-6157] synthesizing module 'cam_read' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/cam_read.v:21]
+	Parameter AW bound to: 15 - type: integer 
+	Parameter DW bound to: 12 - type: integer 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+	Parameter BYTE1 bound to: 1 - type: integer 
+	Parameter BYTE2 bound to: 2 - type: integer 
+	Parameter NOTHING bound to: 3 - type: integer 
+	Parameter imaSiz bound to: 19199 - type: integer 
+INFO: [Synth 8-226] default block is never used [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/cam_read.v:64]
+INFO: [Synth 8-6155] done synthesizing module 'cam_read' (5#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/cam_read.v:21]
+INFO: [Synth 8-6157] synthesizing module 'procesamiento' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/procesamiento.v:3]
+	Parameter n bound to: 120 - type: integer 
+	Parameter m bound to: 160 - type: integer 
+	Parameter AW bound to: 15 - type: integer 
+	Parameter DW bound to: 12 - type: integer 
+	Parameter min_R bound to: 1 - type: integer 
+	Parameter min_G bound to: 1 - type: integer 
+	Parameter min_B bound to: 1 - type: integer 
+	Parameter INIT bound to: 32'sb00000000000000000000000000000000 
+	Parameter ADD_COL bound to: 1 - type: integer 
+	Parameter SEL_COL bound to: 2 - type: integer 
+	Parameter ADD_ACH_MAY bound to: 3 - type: integer 
+	Parameter DONE bound to: 4 - type: integer 
+	Parameter CARGAR_DATO bound to: 5 - type: integer 
+	Parameter NOTHING bound to: 6 - type: integer 
+	Parameter imaSiz bound to: 19200 - type: integer 
+	Parameter min_ancho_actual bound to: 3 - type: integer 
+WARNING: [Synth 8-6014] Unused sequential element aux_init_procesamiento_reg was removed.  [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/procesamiento.v:82]
+WARNING: [Synth 8-6014] Unused sequential element aux_init_procesamiento_reg was removed.  [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/procesamiento.v:172]
+INFO: [Synth 8-6155] done synthesizing module 'procesamiento' (6#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/procesamiento.v:3]
+INFO: [Synth 8-6157] synthesizing module 'buffer_ram_dp' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/buffer_ram_dp.v:27]
+	Parameter AW bound to: 15 - type: integer 
+	Parameter DW bound to: 12 - type: integer 
+	Parameter imageFILE bound to: D:/UNAL/semester6/digitali/proyecto/wp2-simulacion-captura-grupo-03/src/sources/imagen.men - type: string 
+	Parameter NPOS bound to: 32768 - type: integer 
+	Parameter imaSiz bound to: 19200 - type: integer 
+CRITICAL WARNING: [Synth 8-4445] could not open $readmem data file 'D:/UNAL/semester6/digitali/proyecto/wp2-simulacion-captura-grupo-03/src/sources/imagen.men'; please make sure the file is added to project and has read permission, ignoring [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/buffer_ram_dp.v:76]
+INFO: [Synth 8-6155] done synthesizing module 'buffer_ram_dp' (7#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/buffer_ram_dp.v:27]
+INFO: [Synth 8-6157] synthesizing module 'VGA_Driver' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/VGA_driver.v:19]
+	Parameter DW bound to: 12 - type: integer 
+	Parameter SCREEN_X bound to: 640 - type: integer 
+	Parameter FRONT_PORCH_X bound to: 16 - type: integer 
+	Parameter SYNC_PULSE_X bound to: 96 - type: integer 
+	Parameter BACK_PORCH_X bound to: 48 - type: integer 
+	Parameter TOTAL_SCREEN_X bound to: 800 - type: integer 
+	Parameter SCREEN_Y bound to: 480 - type: integer 
+	Parameter FRONT_PORCH_Y bound to: 10 - type: integer 
+	Parameter SYNC_PULSE_Y bound to: 2 - type: integer 
+	Parameter BACK_PORCH_Y bound to: 33 - type: integer 
+	Parameter TOTAL_SCREEN_Y bound to: 525 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'VGA_Driver' (8#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/VGA_driver.v:19]
+INFO: [Synth 8-6155] done synthesizing module 'camara' (9#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/camara/camara.v:21]
+INFO: [Synth 8-6157] synthesizing module 'radar' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/radar.v:2]
+INFO: [Synth 8-6157] synthesizing module 'servo' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/servo.v:2]
+WARNING: [Synth 8-6014] Unused sequential element auxContador_reg was removed.  [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/servo.v:33]
+INFO: [Synth 8-6155] done synthesizing module 'servo' (10#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/servo.v:2]
+INFO: [Synth 8-6157] synthesizing module 'ultrasonido1' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/ultrasonido1.v:4]
+	Parameter divH bound to: 1000 - type: integer 
+	Parameter divL bound to: 2000 - type: integer 
+INFO: [Synth 8-6155] done synthesizing module 'ultrasonido1' (11#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/ultrasonido1.v:4]
+INFO: [Synth 8-6155] done synthesizing module 'radar' (12#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/radar/radar.v:2]
+INFO: [Synth 8-6157] synthesizing module 'motor' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:3]
+	Parameter divH bound to: 50000 - type: integer 
+	Parameter divL bound to: 100000 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:77]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:94]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:124]
+INFO: [Synth 8-155] case statement is not full and has no default [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:141]
+INFO: [Synth 8-6155] done synthesizing module 'motor' (13#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/motor/motor.v:3]
+INFO: [Synth 8-6157] synthesizing module 'infra' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infra.v:2]
+INFO: [Synth 8-6157] synthesizing module 'infrarojo' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infrarojo.v:2]
+INFO: [Synth 8-6155] done synthesizing module 'infrarojo' (14#1) [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infrarojo.v:2]
+ERROR: [Synth 8-685] variable 'salida' should not be used in output port connection [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infra.v:5]
+ERROR: [Synth 8-6156] failed synthesizing module 'infra' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/module/verilog/infrarojo/infra.v:2]
+ERROR: [Synth 8-6156] failed synthesizing module 'nexys4ddr' [/home/alvaro/Imágenes/Digital_II-main/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v:4]
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:08 ; elapsed = 00:00:15 . Memory (MB): peak = 2022.621 ; gain = 257.562 ; free physical = 234 ; free virtual = 4923
+---------------------------------------------------------------------------------
+RTL Elaboration failed
+INFO: [Common 17-83] Releasing license: Synthesis
+61 Infos, 6 Warnings, 1 Critical Warnings and 4 Errors encountered.
+synth_design failed
+ERROR: [Common 17-69] Command failed: Synthesis failed - please see the console or run log file for details
+INFO: [Common 17-206] Exiting Vivado at Wed Dec 16 14:45:47 2020...

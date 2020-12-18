@@ -76,6 +76,7 @@ initial begin
 	$readmemh(imageFILE, ram);
 	// En la posición n+1 (160*120) se guarda el color negro
 	ram[imaSiz] = 12'h0;
+	ram[15'hffff] = 12'h0; // Necesario par el procesamiento
 end
 endmodule
 

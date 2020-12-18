@@ -37,7 +37,6 @@ module procesamiento#(
 		localparam min_R=1;
 		localparam min_G=1;
 		localparam min_B=1;
-		
 
 localparam INIT=0,ADD_COL=1,SEL_COL=2,ADD_ACH_MAY=3,DONE=4,CARGAR_DATO=5,NOTHING=6, imaSiz=19200;
 reg Done=0,Add_Anc_May=0, Sel_Color=0, Add_Columna=0, Cargar_Dato=0, Reset=0;
@@ -49,7 +48,7 @@ reg enable=1;
 reg [7:0] col=0;
 reg [6:0] fil=1;
 
-localparam min_ancho_actual=3;
+localparam min_ancho_actual=7;
 reg [7:0] ancho_actual=0;
 reg [7:0] ancho_anterior=0;
 reg [6:0] ancho_mayor=0;
@@ -109,19 +108,22 @@ always @(negedge clk) begin
         // Para la Figura
        //fila_valida-(fila_valida>>4) Se hacen 4 corrimiento a derecha lo que equivale al 1/2^2 porciento de error admitido
        //(fila_valida+(fila_valida>>4))>>1 hace referencia al 50 porciento de las filas validas mas un error. 
-        if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida-(fila_valida>>2))) figure<=1; // Tri�ngulo
-        else if(((fila_valida+(fila_valida>>2))>>1)>ancho_mayor&ancho_mayor>((fila_valida-(fila_valida>>2))>>1)) figure<=2; // c�rculo
+        if(fila_valida>=ancho_mayor&ancho_mayor>(fila_valida>>1)) figure<=1;// Tri�ngulo
+        else if((fila_valida>>1)>=ancho_mayor&ancho_mayor>(fila_valida>>2)) figure<=2; // c�rculo
         else if(fila_valida>0) figure<=3; // cuadrado
         else figure<=0;
         
         end
         
         else if (Add_Anc_May)begin
-        fil<=fil+1;
+        fil<=fil+3;
+        proc_addr_in<=proc_addr_in+2*m;
         col<=0;
             if(ancho_actual>min_ancho_actual)begin 
+                
                 fila_valida<=fila_valida+1;
                 if(ancho_anterior<ancho_actual)ancho_mayor<=ancho_mayor+1;
+            
             end
         ancho_anterior<=ancho_actual;
         ancho_actual<=0;       
