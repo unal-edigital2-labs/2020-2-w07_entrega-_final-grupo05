@@ -6,22 +6,22 @@ set_msg_config -id {Common 17-55} -new_severity {Warning}
 
 # Add Sources
 
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/camara.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/buffer_ram_dp.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/cam_read.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/procesamiento.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/VGA_driver.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_0.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/camara/PLL/clk24_25_nexys4_clk_wiz.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/radar/radar.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/radar/servo.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/radar/ultrasonido1.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/motor/motor.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/infrarojo/infra.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/module/verilog/infrarojo/infrarojo.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/camara.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/buffer_ram_dp.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/cam_read.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/procesamiento.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/VGA_driver.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/PLL/clk24_25_nexys4.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/PLL/clk24_25_nexys4_0.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/camara/PLL/clk24_25_nexys4_clk_wiz.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/radar/radar.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/radar/servo.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/radar/ultrasonido1.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/motor/motor.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/infrarojo/infra.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/module/verilog/infrarojo/infrarojo.v}
 read_verilog {/opt/litex/pythondata-cpu-picorv32/pythondata_cpu_picorv32/verilog/picorv32.v}
-read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/build/nexys4ddr/gateware/nexys4ddr.v}
+read_verilog {/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/build/nexys4ddr/gateware/nexys4ddr.v}
 
 # Add EDIFs
 

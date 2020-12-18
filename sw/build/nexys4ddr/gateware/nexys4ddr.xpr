@@ -3,10 +3,10 @@
 <!--                                                         -->
 <!-- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="44" Path="/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/build/nexys4ddr/gateware/nexys4ddr.xpr">
+<Project Version="7" Minor="44" Path="/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/build/nexys4ddr/gateware/nexys4ddr.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="6b3296d6fe2e4cc8bda0ba7bda468ee2"/>
+    <Option Name="Id" Val="1c2e8a83e026413ea5d350d012ac07e5"/>
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -156,7 +156,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../../../../../../../../../../../opt/litex/pythondata-cpu-picorv32/pythondata_cpu_picorv32/verilog/picorv32.v">
+      <File Path="$PPRDIR/../../../../../../../../../../opt/litex/pythondata-cpu-picorv32/pythondata_cpu_picorv32/verilog/picorv32.v">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>

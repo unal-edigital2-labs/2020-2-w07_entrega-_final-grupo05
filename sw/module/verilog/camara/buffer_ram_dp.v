@@ -28,7 +28,7 @@ module buffer_ram_dp#(
 	parameter AW = 15,		 // Cantidad de bits  de la direccion.
 	parameter DW = 12,		 // Cantidad de Bits de los datos.
 	// Absolute address in Esteban's computer
-	parameter imageFILE = "D:/UNAL/semester6/digitali/proyecto/wp2-simulacion-captura-grupo-03/src/sources/imagen.men")
+	parameter imageFILE = "/home/julio79077/Descargas/Digital_II-main/Integrationii/module/verilog/camara/imagen.men")
 	// Absolute address in Niko's computer
 	// parameter imageFILE = "C:/Users/LucasTheKitten/Desktop/Captura/wp2-simulacion-captura-grupo-03/src/sources/imagen.men")
 	

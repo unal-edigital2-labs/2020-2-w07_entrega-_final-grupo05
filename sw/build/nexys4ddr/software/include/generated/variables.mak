@@ -7,7 +7,7 @@ CPU_DIRECTORY=/opt/litex/litex/litex/soc/cores/cpu/picorv32
 COMPILER_RT_DIRECTORY=/opt/litex/pythondata-software-compiler_rt/pythondata_software_compiler_rt/data
 SOC_DIRECTORY=/opt/litex/litex/litex/soc
 export BUILDINC_DIRECTORY
-BUILDINC_DIRECTORY=/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega_final_grupo05/sw/Integrationii/build/nexys4ddr/software/include
+BUILDINC_DIRECTORY=/home/esteban/UNAL/AnalogElectrinicsII/Proyecto/w07_entrega-_final-grupo05/sw/build/nexys4ddr/software/include
 LIBCOMPILER_RT_DIRECTORY=/opt/litex/litex/litex/soc/software/libcompiler_rt
 LIBBASE_DIRECTORY=/opt/litex/litex/litex/soc/software/libbase
 LIBLITEDRAM_DIRECTORY=/opt/litex/litex/litex/soc/software/liblitedram

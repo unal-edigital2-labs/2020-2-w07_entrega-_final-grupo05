@@ -1607,25 +1607,25 @@ static void camara_test(void)
         camara_cntrl_init_procesamiento_write(1);
         delay_ms(2);
         camara_cntrl_init_procesamiento_write(0);
-        done=0;
-		while(~done)
-		{
-			done=camara_cntrl_done_read();
-		}
+		delay_ms(2);
+
+		done=camara_cntrl_done_read();
 		figura=camara_cntrl_figure_read();
 		color=camara_cntrl_color_read();
 		
+		
+		
 		printf("Done : %i\n", done); 
-							/* Cuando se identifica la FIGURA aparece en consola el valor correspondiente */
+
 		if(figura==1) 
-			printf("Triangulo\n");    
+			printf("Triangulo\n");
 		else if(figura==2) 
 			printf("Circulo\n");
 		else if(figura==3) 
 			printf("Cuadrado\n");
 		else if(figura==0) 
 			printf("Figura no definida\n");
-							/*Cuando se identifica el COLOR aparece en consola el valor correspondiente */
+
 		if(color==1) 
 			printf("Rojo\n");
 		else if(color==2) 
