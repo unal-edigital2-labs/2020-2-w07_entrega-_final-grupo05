@@ -1228,7 +1228,12 @@ Para el  echo que es la señal de entrada
 		
 	end
 ```
- 
+ ## Mapa de memoria radar
+|Tipo|Nombre|Dirección|
+|--|--|--|
+|ro|radar_cntrl_distance|0x82005000|
+|rw|radar_cntrl_boton_cambiar_grados|0x82005004|
+|rw|radar_cntrl_ultra|0x82005008|
  
 ## Motor paso a paso
 Los motores paso a paso serán utilizados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma dirección permiten el desplazamiento hacia delante o hacia atrás, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
@@ -1404,6 +1409,48 @@ Por ultimo se vincularon 3 sensores infrarojos, como el que se ve acontinuacion.
 El funcionamiento de este es muy simple. Tengo un emisor y un receptor, el emisor es un LED infrarojo que emitie una onda infrarojo y el receptor es un fotodiodo.
 
 ![DIAGRAMA1](/docs/figure/infra.png)
+
+Basicamente el emisor emite una señal que se refleja o no dependiendo de la supercie, y recpetor recibe este reflejo. El sensor nos entrega 1 si la señal se refleja y vuelve al receptor, y cero si la señal reflejada no vuelve al receptor.
+
+Ahora explicaremos el codio verilog:
+
+```verilog
+module infrarojo(input clk, input entrada, output reg salida  ); //clk: Reloj
+								 //entrada: la señal que manda el sensor
+								 //salida: la señal que se envia al bus
+reg h;
+always @(posedge clk) begin
+if(entrada)
+ begin 
+   salida <= 1; 
+ end
+ else
+ if(~entrada)
+ begin 
+ salida <= 0; 
+ end
+end 
+endmodule 
+```
+Este codigo basicamente, retransmite la señal del sensor al SoC, lo que pasa es que este bloque es necesario para enviar mis señales por el bus del SoC.
+
+Como haremos uso de tres sensores, creamos otro bloque en donde los instanciamos:
+
+
+```verilog
+module infra(input clk, input entrada, output salida, input entrada1, output salida1, input entrada2, output salida2);
+ 
+ 
+ infrarojo  infrarojo1(.clk(clk), .entrada(entrada),  .salida(salida));		//Sensor1
+ infrarojo  infrarojo2(.clk(clk), .entrada(entrada1), .salida(salida1));	//Sensor2
+ infrarojo  infrarojo3(.clk(clk), .entrada(entrada2), .salida(salida2));	//Sensor3
+ 
+
+ 
+ 
+ 
+ endmodule
+```
 
 
 ## Mapa de memoria infrarrojo
