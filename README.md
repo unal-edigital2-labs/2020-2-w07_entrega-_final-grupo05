@@ -1228,12 +1228,6 @@ Para el  echo que es la señal de entrada
 		
 	end
 ```
- ## Mapa de memoria radar
-|Tipo|Nombre|Dirección|
-|--|--|--|
-|ro|radar_cntrl_distance|0x82005000|
-|rw|radar_cntrl_boton_cambiar_grados|0x82005004|
-|rw|radar_cntrl_ultra|0x82005008|
  
 ## Motor paso a paso
 Los motores paso a paso serán utilizados para el movimiento de las dos llantas principales del robot, cuando las llantas se mueven en la misma dirección permiten el desplazamiento hacia delante o hacia atrás, cuando una llanta queda bloqueada y la otra gira: logra hacer que el robot gire, según convenga, a la derecha o hacia la izquierda.
