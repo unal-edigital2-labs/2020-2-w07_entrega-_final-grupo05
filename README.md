@@ -2,9 +2,9 @@
 [![N|Solid](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)](https://www.universidadesvirtuales.com.co/logos/original/logo-universidad-nacional-de-colombia.png)
 
 * >José Álvaro Celis López
-* >Julian David Pulido Castañeda C.C. 1000163697
+* >Julian David Pulido Castañeda
 * >Esteban Landino Fajardo
-* >Julian David Escobar Jamioy C.C. 1122786713
+* >Julian David Escobar Jamioy
 
 ## INTRODUCCIÓN
 Ha inicio del semestre 2020-2, se planteó el desarrollo de un System on Chip (SoC) para un sistema autónomo capaz de navegar y trazar un laberinto al mismo tiempo que procese imágenes de objetos por color.
